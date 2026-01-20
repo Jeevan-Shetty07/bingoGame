@@ -638,3 +638,60 @@ li.active-turn {
   filter: brightness(1.1);
   transform: translateY(-1px);
 }
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(255,255,255,0.10);
+  color: white;
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-weight: 800;
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.25s ease;
+  z-index: 9999;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-6px);
+}
+.cell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(255,255,255,0.35) 0%, transparent 55%);
+  opacity: 0;
+  transform: scale(0.6);
+  transition: 0.25s ease;
+}
+
+.cell:active::before {
+  opacity: 1;
+  transform: scale(1.1);
+}
+.board {
+  width: 100%;
+}
+
+.cell {
+  aspect-ratio: 1 / 1;   /* makes perfect squares */
+  display: grid;
+  place-items: center;
+  padding: 0;            /* remove extra padding */
+}
+.calledBox.pop {
+  animation: pop 0.25s ease, shake 0.35s ease;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  50% { transform: translateX(3px); }
+  75% { transform: translateX(-2px); }
+  100% { transform: translateX(0); }
+}

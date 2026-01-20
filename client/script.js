@@ -46,7 +46,8 @@ function copyRoomCode() {
 
   navigator.clipboard.writeText(code)
     .then(() => {
-      alert("Room code copied! 📋✅");
+      showToast("Room code copied! 📋✅");
+
     })
     .catch(() => {
       // fallback if clipboard not allowed
@@ -382,4 +383,13 @@ function claimBingo() {
 function rematch() {
   socket.emit("rematch", { roomId: currentRoomId });
   show("game");
+}
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  if (!t) return alert(msg);
+
+  t.innerText = msg;
+  t.classList.add("show");
+
+  setTimeout(() => t.classList.remove("show"), 1200);
 }
