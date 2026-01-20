@@ -1,0 +1,616 @@
+* {
+  box-sizing: border-box;
+  font-family: system-ui, sans-serif;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #111827, #0b1220 60%, #020617);
+  color: white;
+  display: flex;
+  justify-content: center;
+  overflow-x: hidden;
+}
+
+/* Background blobs */
+.bg-blobs {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.blob {
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  filter: blur(35px);
+  opacity: 0.25;
+  animation: drift 8s ease-in-out infinite alternate;
+}
+
+.b1 { top: -60px; left: -60px; background: #22c55e; }
+.b2 { bottom: -80px; right: -80px; background: #3b82f6; animation-duration: 10s; }
+.b3 { top: 40%; left: 70%; background: #a855f7; animation-duration: 12s; }
+
+@keyframes drift {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(40px, -30px) scale(1.15); }
+}
+
+#app {
+  width: 100%;
+  max-width: 560px;
+  padding: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Topbar */
+.topbar {
+  margin-bottom: 14px;
+}
+
+.brand {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(30, 41, 59, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+
+.logo {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: rgba(34, 197, 94, 0.18);
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  animation: softPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes softPulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 rgba(34,197,94,0.0); }
+  100% { transform: scale(1.05); box-shadow: 0 0 24px rgba(34,197,94,0.22); }
+}
+
+.brandTitle {
+  margin: 0;
+  font-size: 18px;
+  letter-spacing: 0.3px;
+}
+
+.brandSub {
+  margin: 2px 0 0;
+  opacity: 0.75;
+  font-size: 13px;
+}
+
+/* Screens */
+.screen { display: none; }
+.screen.active { display: block; animation: fadeIn 0.35s ease; }
+
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Cards */
+.card {
+  background: rgba(30, 41, 59, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 14px 40px rgba(0,0,0,0.35);
+}
+
+.heroCard {
+  text-align: center;
+}
+
+.heroTitle {
+  margin: 0 0 6px;
+  font-size: 26px;
+  text-shadow: 0 0 18px rgba(34,197,94,0.2);
+}
+
+.heroDesc {
+  margin: 0 0 14px;
+  opacity: 0.85;
+}
+
+/* Inputs */
+.fieldLabel {
+  display: block;
+  margin: 10px 0 6px;
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+.input {
+  width: 100%;
+  padding: 12px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(15, 23, 42, 0.6);
+  color: white;
+  outline: none;
+  transition: 0.2s ease;
+}
+
+.input:focus {
+  border-color: rgba(34,197,94,0.55);
+  box-shadow: 0 0 0 4px rgba(34,197,94,0.12);
+}
+
+/* Buttons */
+.btn {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0 0;
+  border-radius: 14px;
+  border: none;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.12s ease, filter 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn:active { transform: scale(0.98); }
+
+.primary {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  box-shadow: 0 10px 22px rgba(34,197,94,0.18);
+}
+
+.primary:hover {
+  filter: brightness(1.06);
+  box-shadow: 0 14px 30px rgba(34,197,94,0.25);
+}
+
+.secondary {
+  background: rgba(148, 163, 184, 0.18);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.secondary:hover { filter: brightness(1.1); }
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Lobby pills */
+.infoRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 10px 0 14px;
+}
+
+.pill {
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.pillLabel {
+  display: block;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.pillValue {
+  display: block;
+  margin-top: 4px;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+/* Players list */
+.playersList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.playersList li {
+  background: rgba(15, 23, 42, 0.55);
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.06);
+  transition: 0.2s ease;
+}
+
+li.active-turn {
+  border: 1px solid rgba(34,197,94,0.55);
+  box-shadow: 0 0 18px rgba(34,197,94,0.16);
+  transform: translateX(4px);
+}
+
+/* Game UI */
+.gameCard {
+  padding-bottom: 14px;
+}
+
+.turnText {
+  margin: 0 0 12px;
+  font-size: 16px;
+  text-align: center;
+  animation: shimmer 2.4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 1; }
+}
+
+.gameTop {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.calledBox {
+  width: 120px;
+  height: 120px;
+  border-radius: 18px;
+  background: radial-gradient(circle at top, rgba(34,197,94,0.35), rgba(15,23,42,0.7));
+  border: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 14px 35px rgba(0,0,0,0.35);
+}
+
+.calledLabel {
+  font-size: 12px;
+  opacity: 0.75;
+  letter-spacing: 1px;
+}
+
+.calledNum {
+  font-size: 40px;
+  font-weight: 900;
+  margin-top: 2px;
+}
+
+.timerBox {
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 14px 35px rgba(0,0,0,0.35);
+}
+
+.timerLabel {
+  display: block;
+  opacity: 0.75;
+  font-size: 12px;
+}
+
+.timerValue {
+  display: block;
+  margin-top: 4px;
+  font-size: 20px;
+  font-weight: 900;
+}
+
+/* Timer danger pulse */
+#timeLeft {
+  display: inline-block;
+  min-width: 28px;
+  text-align: center;
+}
+
+/* Board */
+.board {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.cell {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 14px 8px;
+  border-radius: 14px;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  font-weight: 800;
+  font-size: 15px;
+  transition: transform 0.12s ease, box-shadow 0.2s ease, background 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.cell:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 18px rgba(0,0,0,0.35);
+}
+
+.cell.callable {
+  outline: 2px dashed rgba(34,197,94,0.8);
+  animation: callGlow 1.2s infinite alternate;
+}
+
+@keyframes callGlow {
+  0% { box-shadow: 0 0 0 rgba(34,197,94,0.0); }
+  100% { box-shadow: 0 0 18px rgba(34,197,94,0.25); }
+}
+
+.cell.marked {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: #05130b;
+  box-shadow: 0 12px 24px rgba(34,197,94,0.25);
+  animation: markPop 0.18s ease;
+}
+
+@keyframes markPop {
+  0% { transform: scale(0.92); }
+  100% { transform: scale(1); }
+}
+
+.cell.masked {
+  background: rgba(2, 6, 23, 0.85);
+  color: #64748b;
+  opacity: 0.7;
+  cursor: not-allowed;
+  filter: grayscale(0.2);
+}
+
+.cell.masked::after {
+  content: "✖";
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* Called box pop animation (your existing JS triggers .pop) */
+.pop {
+  animation: pop 0.25s ease;
+}
+
+@keyframes pop {
+  0% { transform: scale(0.75); }
+  100% { transform: scale(1); }
+}
+
+/* Bingo button */
+.bingoBtn {
+  margin-top: 14px;
+  background: linear-gradient(135deg, #f97316, #ef4444);
+  box-shadow: 0 14px 28px rgba(239,68,68,0.18);
+}
+
+.bingoBtn:hover {
+  filter: brightness(1.05);
+  box-shadow: 0 18px 36px rgba(239,68,68,0.24);
+}
+
+/******** WINNER SCREEN ********/
+.winnerCard {
+  margin-top: 40px;
+  background: rgba(30, 41, 59, 0.55);
+  padding: 26px;
+  border-radius: 18px;
+  text-align: center;
+  border: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 14px 40px rgba(0,0,0,0.35);
+  animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+  0% { transform: translateY(30px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+.winnerTitle {
+  font-size: 44px;
+  margin: 0;
+  color: #22c55e;
+  animation: glow 1s infinite alternate;
+}
+
+@keyframes glow {
+  0% { text-shadow: 0 0 5px rgba(34,197,94,0.5); }
+  100% { text-shadow: 0 0 26px rgba(34,197,94,0.9); }
+}
+
+.winnerName {
+  font-size: 18px;
+  margin-top: 12px;
+  opacity: 0.9;
+}
+
+.confetti span {
+  display: inline-block;
+  font-size: 28px;
+  animation: float 1s infinite alternate;
+  margin: 0 4px;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px) rotate(0deg); }
+  100% { transform: translateY(-12px) rotate(6deg); }
+}
+/* =========================================================
+   1) BOARD ENTRANCE ANIMATION (cells appear one by one)
+   (Works with: c.className = "cell enter"; in renderBoard)
+========================================================= */
+.cell.enter {
+  opacity: 0;
+  transform: translateY(14px) scale(0.92);
+  animation: cellEnter 0.35s ease forwards;
+}
+
+@keyframes cellEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.92);
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0px) scale(1);
+    filter: blur(0px);
+  }
+}
+
+/* =========================================================
+   2) REAL CONFETTI BURST (Pure CSS)
+   (Works when winner screen opens)
+========================================================= */
+.confettiBurst {
+  position: relative;
+  width: 100%;
+  height: 140px;
+  margin: 14px 0 8px;
+  overflow: hidden;
+}
+
+.confettiBurst i {
+  position: absolute;
+  top: -12px;
+  width: 10px;
+  height: 16px;
+  border-radius: 3px;
+  opacity: 0;
+  animation: confettiFall 1.6s ease-in-out forwards;
+}
+
+/* Different positions + delays */
+.confettiBurst i:nth-child(1)  { left: 5%;  animation-delay: 0.00s; transform: rotate(10deg); }
+.confettiBurst i:nth-child(2)  { left: 10%; animation-delay: 0.05s; transform: rotate(35deg); }
+.confettiBurst i:nth-child(3)  { left: 15%; animation-delay: 0.10s; transform: rotate(60deg); }
+.confettiBurst i:nth-child(4)  { left: 20%; animation-delay: 0.02s; transform: rotate(90deg); }
+.confettiBurst i:nth-child(5)  { left: 25%; animation-delay: 0.12s; transform: rotate(120deg); }
+.confettiBurst i:nth-child(6)  { left: 30%; animation-delay: 0.06s; transform: rotate(150deg); }
+.confettiBurst i:nth-child(7)  { left: 35%; animation-delay: 0.16s; transform: rotate(30deg); }
+.confettiBurst i:nth-child(8)  { left: 40%; animation-delay: 0.08s; transform: rotate(70deg); }
+.confettiBurst i:nth-child(9)  { left: 45%; animation-delay: 0.18s; transform: rotate(110deg); }
+.confettiBurst i:nth-child(10) { left: 50%; animation-delay: 0.03s; transform: rotate(160deg); }
+.confettiBurst i:nth-child(11) { left: 55%; animation-delay: 0.20s; transform: rotate(20deg); }
+.confettiBurst i:nth-child(12) { left: 60%; animation-delay: 0.09s; transform: rotate(80deg); }
+.confettiBurst i:nth-child(13) { left: 65%; animation-delay: 0.22s; transform: rotate(130deg); }
+.confettiBurst i:nth-child(14) { left: 70%; animation-delay: 0.07s; transform: rotate(170deg); }
+.confettiBurst i:nth-child(15) { left: 75%; animation-delay: 0.25s; transform: rotate(40deg); }
+.confettiBurst i:nth-child(16) { left: 80%; animation-delay: 0.11s; transform: rotate(95deg); }
+.confettiBurst i:nth-child(17) { left: 85%; animation-delay: 0.28s; transform: rotate(140deg); }
+.confettiBurst i:nth-child(18) { left: 90%; animation-delay: 0.13s; transform: rotate(175deg); }
+.confettiBurst i:nth-child(19) { left: 95%; animation-delay: 0.30s; transform: rotate(55deg); }
+.confettiBurst i:nth-child(20) { left: 12%; animation-delay: 0.17s; transform: rotate(105deg); }
+.confettiBurst i:nth-child(21) { left: 22%; animation-delay: 0.24s; transform: rotate(145deg); }
+.confettiBurst i:nth-child(22) { left: 32%; animation-delay: 0.04s; transform: rotate(15deg); }
+.confettiBurst i:nth-child(23) { left: 42%; animation-delay: 0.14s; transform: rotate(65deg); }
+.confettiBurst i:nth-child(24) { left: 52%; animation-delay: 0.26s; transform: rotate(115deg); }
+.confettiBurst i:nth-child(25) { left: 62%; animation-delay: 0.19s; transform: rotate(165deg); }
+.confettiBurst i:nth-child(26) { left: 72%; animation-delay: 0.29s; transform: rotate(25deg); }
+.confettiBurst i:nth-child(27) { left: 82%; animation-delay: 0.21s; transform: rotate(75deg); }
+.confettiBurst i:nth-child(28) { left: 92%; animation-delay: 0.31s; transform: rotate(125deg); }
+.confettiBurst i:nth-child(29) { left: 18%; animation-delay: 0.27s; transform: rotate(155deg); }
+.confettiBurst i:nth-child(30) { left: 88%; animation-delay: 0.15s; transform: rotate(95deg); }
+
+/* Confetti colors (cycle) */
+.confettiBurst i:nth-child(3n+1) { background: #22c55e; }
+.confettiBurst i:nth-child(3n+2) { background: #3b82f6; }
+.confettiBurst i:nth-child(3n)   { background: #f97316; }
+
+@keyframes confettiFall {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px) rotate(0deg);
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(160px) rotate(520deg);
+  }
+}
+
+/* =========================================================
+   3) RESPONSIVE (All devices)
+========================================================= */
+@media (max-width: 520px) {
+  #app {
+    padding: 12px;
+  }
+
+  .brandTitle {
+    font-size: 16px;
+  }
+
+  .brandSub {
+    font-size: 12px;
+  }
+
+  .card {
+    padding: 14px;
+    border-radius: 16px;
+  }
+
+  .heroTitle {
+    font-size: 22px;
+  }
+
+  .gameTop {
+    grid-template-columns: 1fr;
+  }
+
+  .calledBox {
+    width: 100%;
+    height: 110px;
+  }
+
+  .calledNum {
+    font-size: 34px;
+  }
+
+  .timerValue {
+    font-size: 18px;
+  }
+
+  .cell {
+    padding: 12px 6px;
+    font-size: 14px;
+    border-radius: 12px;
+  }
+
+  .winnerTitle {
+    font-size: 38px;
+  }
+}
+
+@media (max-width: 360px) {
+  .cell {
+    padding: 10px 4px;
+    font-size: 13px;
+  }
+
+  .btn {
+    font-size: 15px;
+    padding: 11px;
+  }
+}

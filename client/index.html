@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bingo Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <!-- Background decorations -->
+    <div class="bg-blobs">
+      <span class="blob b1"></span>
+      <span class="blob b2"></span>
+      <span class="blob b3"></span>
+    </div>
+
+    <div id="app">
+      <header class="topbar">
+        <div class="brand">
+          <div class="logo">🎲</div>
+          <div>
+            <h1 class="brandTitle">Bingo Arena</h1>
+            <p class="brandSub">Call • Mark • Win 🏆</p>
+          </div>
+        </div>
+      </header>
+
+      <!-- HOME -->
+      <section id="home" class="screen active">
+        <div class="card heroCard">
+          <h2 class="heroTitle">Welcome to Bingo!</h2>
+          <p class="heroDesc">
+            Create a room or join your friends and start the chaos 😈
+          </p>
+
+          <button class="btn primary" onclick="goToCreate()">
+            ✨ Create Room
+          </button>
+          <button class="btn primary" onclick="goToJoin()">🚪 Join Room</button>
+        </div>
+      </section>
+
+      <!-- CREATE -->
+      <section id="create" class="screen">
+        <div class="card">
+          <h2 class="cardTitle">Create Room</h2>
+
+          <label class="fieldLabel">Your Name</label>
+          <input id="createName" class="input" placeholder="Enter your name" />
+
+          <label class="fieldLabel">Board Size</label>
+          <select id="boardSize" class="input">
+            <option value="5">5 × 5</option>
+            <option value="6">6 × 6</option>
+            <option value="7">7 × 7</option>
+            <option value="8">8 × 8</option>
+          </select>
+
+          <button class="btn primary" onclick="createRoom()">🚀 Create</button>
+          <button class="btn secondary" onclick="goHome()">⬅ Back</button>
+        </div>
+      </section>
+
+      <!-- JOIN -->
+      <section id="join" class="screen">
+        <div class="card">
+          <h2 class="cardTitle">Join Room</h2>
+
+          <label class="fieldLabel">Your Name</label>
+          <input id="joinName" class="input" placeholder="Enter your name" />
+
+          <label class="fieldLabel">Room Code</label>
+          <input id="joinRoomId" class="input" placeholder="Enter room code" />
+
+          <button class="btn primary" onclick="joinRoom()">🎯 Join</button>
+          <button class="btn secondary" onclick="goHome()">⬅ Back</button>
+        </div>
+      </section>
+
+      <!-- LOBBY -->
+      <section id="lobby" class="screen">
+        <div class="card">
+          <h2 class="cardTitle">Lobby</h2>
+
+          <div class="infoRow">
+            <div class="pill">
+              <span class="pillLabel">Room</span>
+              <span class="pillValue" id="roomCode"></span>
+            </div>
+
+            <div class="pill">
+              <span class="pillLabel">Board</span>
+              <span class="pillValue"
+                ><span id="roomSize"></span>×<span id="roomSize2"></span
+              ></span>
+            </div>
+          </div>
+
+          <h3 class="subTitle">Players</h3>
+          <ul id="playersList" class="playersList"></ul>
+
+          <button id="startBtn" class="btn primary" onclick="startGame()">
+            🔥 Start Game
+          </button>
+        </div>
+      </section>
+
+      <!-- GAME -->
+      <section id="game" class="screen">
+        <div class="card gameCard">
+          <h2 id="turnText" class="turnText">Waiting...</h2>
+
+          <div class="gameTop">
+            <div id="calledBox" class="calledBox">
+              <span class="calledLabel">LAST</span>
+              <span id="lastCalled" class="calledNum">-</span>
+            </div>
+
+            <div id="timer" class="timerBox">
+              <span class="timerLabel">⏱ Time Left</span>
+              <span class="timerValue"><span id="timeLeft">0</span>s</span>
+            </div>
+          </div>
+
+          <div id="board" class="board"></div>
+
+          <button
+            id="bingoBtn"
+            class="btn bingoBtn"
+            disabled
+            onclick="claimBingo()"
+          >
+            💥 BINGO!
+          </button>
+        </div>
+      </section>
+
+      <!-- WINNER SCREEN -->
+      <section id="winner" class="screen">
+        <div class="winnerCard">
+          <h1 class="winnerTitle">🏆 BINGO!</h1>
+          <p class="winnerName" id="winnerName">Winner: -</p>
+
+          <!-- PURE CSS CONFETTI BURST -->
+          <div class="confettiBurst" aria-hidden="true">
+            <i></i><i></i><i></i><i></i><i></i> <i></i><i></i><i></i><i></i
+            ><i></i> <i></i><i></i><i></i><i></i><i></i> <i></i><i></i><i></i
+            ><i></i><i></i> <i></i><i></i><i></i><i></i><i></i> <i></i><i></i
+            ><i></i><i></i><i></i>
+          </div>
+
+          <button class="btn primary" onclick="rematch()">🔁 Rematch</button>
+          <button class="btn secondary" onclick="goHome()">🏠 Home</button>
+        </div>
+      </section>
+    </div>
+
+    <script src="bingoLogic.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
