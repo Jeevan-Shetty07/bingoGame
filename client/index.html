@@ -85,9 +85,20 @@
           <h2 class="cardTitle">Lobby</h2>
 
           <div class="infoRow">
-            <div class="pill">
+            <div class="pill roomPill">
               <span class="pillLabel">Room</span>
-              <span class="pillValue" id="roomCode"></span>
+
+              <div class="roomRow">
+                <span class="pillValue" id="roomCode"></span>
+
+                <button
+                  class="copyBtn"
+                  onclick="copyRoomCode()"
+                  title="Copy Room Code"
+                >
+                  📋 Copy
+                </button>
+              </div>
             </div>
 
             <div class="pill">

@@ -40,6 +40,25 @@ function goToCreate() {
 function goToJoin() {
   show("join");
 }
+function copyRoomCode() {
+  const code = roomCode?.innerText?.trim();
+  if (!code) return alert("Room code not available yet!");
+
+  navigator.clipboard.writeText(code)
+    .then(() => {
+      alert("Room code copied! 📋✅");
+    })
+    .catch(() => {
+      // fallback if clipboard not allowed
+      const temp = document.createElement("input");
+      temp.value = code;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand("copy");
+      document.body.removeChild(temp);
+      alert("Room code copied! 📋✅");
+    });
+}
 
 /******** ROOM ********/
 function createRoom() {
