@@ -40,8 +40,8 @@ function createRoom(socketId, name, boardSize) {
 
     turnLocked: false,
 
-    // 🔥 EXACT tracking
-    responded: {}, // socketId -> true/false
+    // socketId -> true/false
+    responded: {},
 
     winner: null,
   };
@@ -55,6 +55,12 @@ function joinRoom(roomId, socketId, name) {
   if (room.players.length >= 10) return null;
 
   room.players.push({ id: socketId, name, board: null });
+
+  // if game already started, ensure responded map has this player too
+  if (room.gameStarted && room.turnLocked) {
+    room.responded[socketId] = false;
+  }
+
   return room;
 }
 
@@ -67,9 +73,14 @@ function startGame(room) {
   room.currentCall = null;
   room.currentTurnIndex = 0;
   room.turnLocked = false;
-  room.responded = {};
-  room.winner = null;
 
+  // reset responded map properly for all players
+  room.responded = {};
+  room.players.forEach((p) => {
+    room.responded[p.id] = true; // nobody is waiting before first call
+  });
+
+  room.winner = null;
   room.gameStarted = true;
 }
 
@@ -80,8 +91,9 @@ function nextTurn(room) {
 function callNumber(room, number) {
   const max = room.boardSize * room.boardSize;
 
-  if (number < 1 || number > max) return false;
-  if (room.calledNumbers.includes(number)) return false;
+  if (number < 1 || number > max) return { ok: false, msg: "Invalid number" };
+  if (room.calledNumbers.includes(number))
+    return { ok: false, msg: "Already called" };
 
   room.calledNumbers.push(number);
 
@@ -92,21 +104,24 @@ function callNumber(room, number) {
 
   room.turnLocked = true;
 
-  // reset response tracking
+  // reset response tracking for THIS call
   room.responded = {};
-  room.players.forEach((p) => (room.responded[p.id] = false));
+  room.players.forEach((p) => {
+    room.responded[p.id] = false;
+  });
 
-  return true;
+  return { ok: true };
 }
 
 function markDone(room, socketId) {
-  if (room.responded[socketId] === false) {
-    room.responded[socketId] = true;
-  }
+  // ✅ Always mark as done, even if undefined
+  if (!room.responded) room.responded = {};
+  room.responded[socketId] = true;
 }
 
 function remainingCount(room) {
-  return Object.values(room.responded).filter((v) => !v).length;
+  if (!room.responded) return 0;
+  return Object.values(room.responded).filter((v) => v === false).length;
 }
 
 function allDone(room) {
