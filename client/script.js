@@ -127,9 +127,19 @@ function toggleChatDrawer() {
   if (window.innerWidth > 900) return; 
   
   const sideView = document.querySelector(".side-view");
+  const mobileToggle = document.getElementById("chatMobileBtn");
   chatOpen = !chatOpen;
   
   if (sideView) sideView.classList.toggle("open", chatOpen);
+  
+  // if the chat is open get that toggle btn outta here so we can see the input!
+  if (mobileToggle) {
+    if (chatOpen) {
+      mobileToggle.classList.add("hide-btn");
+    } else {
+      mobileToggle.classList.remove("hide-btn");
+    }
+  }
   
   if (chatOpen) {
     unreadCount = 0;
@@ -646,18 +656,18 @@ const mobileChatBtn = document.getElementById("chatMobileBtn");
 const chatInputEl = document.getElementById("chatInput");
 
 if (chatMessagesEl) {
-  // detect which way they scrollin
+  // detect which way they scrollin - even more sensitive now!
   chatMessagesEl.addEventListener("scroll", () => {
-    if (window.innerWidth > 900) return;
+    if (window.innerWidth > 900 || !chatOpen) return;
 
     let st = chatMessagesEl.scrollTop;
     
-    if (st > lastScrollTop && st > 10) {
-      // scrollin down? get that btn outta here
+    // if scrollin down or deep in the chat hide it
+    if (st > lastScrollTop || st > 50) {
       if (mobileChatBtn) mobileChatBtn.classList.add("hide-btn");
     } else if (st < lastScrollTop || st <= 10) {
-      // scrollin up or at the top? bring it back
-      if (mobileChatBtn) mobileChatBtn.classList.remove("hide-btn");
+      // scrollin up? show it just in case
+      if (mobileChatBtn && !chatOpen) mobileChatBtn.classList.remove("hide-btn");
     }
     lastScrollTop = st;
   }, { passive: true });
@@ -671,10 +681,10 @@ if (chatInputEl) {
     }
   });
 
-  // only bring it back if we r at the top or not scrollin
+  // on blur only bring it back if the chat is actually closed
   chatInputEl.addEventListener("blur", () => {
     setTimeout(() => {
-      if (window.innerWidth <= 900 && mobileChatBtn && chatMessagesEl && chatMessagesEl.scrollTop <= 10) {
+      if (window.innerWidth <= 900 && mobileChatBtn && !chatOpen) {
         mobileChatBtn.classList.remove("hide-btn");
       }
     }, 300);
