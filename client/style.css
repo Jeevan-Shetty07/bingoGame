@@ -870,4 +870,22 @@ body {
   50% { transform: translateY(-10px); }
 }
 
+/* signature at the bottom - themed to match the cyber-glass look */
+.signature {
+  text-align: center;
+  padding: 40px 10px 20px;
+  background: var(--cyber-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-family: 'Outfit', sans-serif; /* matches the rest of the app */
+  font-size: 14px;
+  letter-spacing: 3px;
+  opacity: 0.8;
+  margin-top: auto;
+  font-weight: 800;
+  text-transform: uppercase;
+  filter: drop-shadow(0 0 8px var(--primary-glow));
+}
+
 
