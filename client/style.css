@@ -700,6 +700,12 @@ body {
   transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
+.chat-drawer-btn.hide-btn {
+  transform: scale(0) translateY(50px);
+  opacity: 0;
+  pointer-events: none;
+}
+
 .chat-drawer-btn:active { transform: scale(0.9); }
 
 .chat-drawer-btn .badge {

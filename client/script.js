@@ -617,3 +617,24 @@ function showToast(msg) {
 
   setTimeout(() => t.classList.remove("show"), 1200);
 }
+// --- SCROLL DETECTION FOR MOBILE CHAT ---
+let lastScrollTop = 0;
+const chatMessagesEl = document.getElementById("chatMessages");
+const mobileChatBtn = document.getElementById("chatMobileBtn");
+
+if (chatMessagesEl) {
+  chatMessagesEl.addEventListener("scroll", () => {
+    // only care about this on smal screens
+    if (window.innerWidth > 900) return;
+
+    let st = chatMessagesEl.scrollTop;
+    if (st > lastScrollTop && st > 50) {
+      // scrollin down - hide the button so it doesnt block the send btn
+      mobileChatBtn.classList.add("hide-btn");
+    } else {
+      // scrollin up or at the top - show it again
+      mobileChatBtn.classList.remove("hide-btn");
+    }
+    lastScrollTop = st <= 0 ? 0 : st;
+  }, { passive: true });
+}
