@@ -701,9 +701,9 @@ body {
 }
 
 .chat-drawer-btn.hide-btn {
-  transform: scale(0) translateY(50px);
-  opacity: 0;
-  pointer-events: none;
+  transform: scale(0) translateY(50px) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 .chat-drawer-btn:active { transform: scale(0.9); }

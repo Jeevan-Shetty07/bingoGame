@@ -96,7 +96,10 @@ function show(id) {
         // KEEP FLEX on mobile so the CSS transform slide-in works!
         sideView.style.display = "flex"; 
         sideView.classList.toggle("open", chatOpen);
-        if (mobileToggle) mobileToggle.style.display = "flex";
+        if (mobileToggle) {
+          mobileToggle.style.display = "flex";
+          mobileToggle.classList.remove("hide-btn"); // reset visibility class
+        }
       }
     }
   }
@@ -282,19 +285,20 @@ socket.on(
       void calledBox.offsetWidth;
       calledBox.classList.add("pop");
 
-      // automatic marking cuz manual is too hard lol - finds the num and marks it
       markNumberOnBoard(call.number);
+      
+      // start a fresh 10s timer localy so evry device is the same
+      startTimer(10); 
     } else {
       lastCalled.innerText = "-";
+      startTimer(0);
     }
 
-    startTimer();
     updateBoardUI();
     updateBingoButton();
 
-    // since its auto now we just send done sraight away
     if (call) {
-      setTimeout(() => sendDoneOnce(), 500); // small delay so it doesnt feel too fast
+      setTimeout(() => sendDoneOnce(), 500); 
     }
   },
 );
@@ -502,40 +506,47 @@ function updateBoardUI() {
 }
 
 /******** TIMER ********/
-function startTimer() {
+const timerLabelEl = document.getElementById("timeLeft");
+
+function startTimer(seconds = 10) {
   clearInterval(timerInt);
+  if (seconds <= 0) {
+    if (timerLabelEl) timerLabelEl.innerText = "0";
+    return;
+  }
+
+  let localTimeLeft = seconds;
+  if (timerLabelEl) {
+    timerLabelEl.innerText = localTimeLeft;
+    timerLabelEl.style.color = "white";
+    timerLabelEl.style.textShadow = "none";
+  }
 
   timerInt = setInterval(() => {
-    if (!currentCall) {
-      timeLeft.innerText = "0";
-      return;
+    localTimeLeft--;
+    
+    if (timerLabelEl) {
+      timerLabelEl.innerText = Math.max(0, localTimeLeft);
+
+      // turn red when we r low on time
+      if (localTimeLeft <= 3) {
+        timerLabelEl.style.color = "#ef4444";
+        timerLabelEl.style.textShadow = "0 0 12px rgba(239,68,68,0.7)";
+      }
     }
 
-    const t = Math.max(
-      0,
-      Math.ceil((currentCall.expiresAt - Date.now()) / 1000),
-    );
-
-    timeLeft.innerText = t;
-
-    // make it red when time is runnin out
-    if (t <= 3) {
-      timeLeft.style.color = "#ef4444";
-      timeLeft.style.textShadow = "0 0 12px rgba(239,68,68,0.7)";
-    } else {
-      timeLeft.style.color = "white";
-      timeLeft.style.textShadow = "none";
-    }
-
-    if (t === 0) {
-      maskIfMissed(currentCall.number);
-      sendDoneOnce();
-      updateBoardUI();
-      updateBingoButton();
+    if (localTimeLeft <= 0) {
+      clearInterval(timerInt);
+      if (currentCall) {
+        maskIfMissed(currentCall.number);
+        sendDoneOnce();
+        updateBoardUI();
+        updateBingoButton();
+      }
     }
 
     if (turnLocked) setTurnUI();
-  }, 200);
+  }, 1000);
 }
 
 function maskIfMissed(number) {
@@ -625,36 +636,29 @@ const chatInputEl = document.getElementById("chatInput");
 
 if (chatMessagesEl) {
   chatMessagesEl.addEventListener("scroll", () => {
-    // only care about this on smal screens
+    // only on mobile/small screens
     if (window.innerWidth > 900) return;
 
     let st = chatMessagesEl.scrollTop;
     
-    // ignore tiny movements
-    if (Math.abs(lastScrollTop - st) <= 5) return;
-
+    // if scrollin down more than a tiny bit hide it
     if (st > lastScrollTop && st > 10) {
-      // scrollin down - hide it so we can see stuff
       mobileChatBtn.classList.add("hide-btn");
-    } else {
-      // scrollin up or at the top - bring it back
+    } else if (st < lastScrollTop || st <= 0) {
+      // scrollin up? bring it back!
       mobileChatBtn.classList.remove("hide-btn");
     }
     lastScrollTop = st;
   }, { passive: true });
 }
 
-// hide when typin cuz it blocks the send btn
+// hide when focusin the input - prevents overlap wid the send btn
 if (chatInputEl) {
   chatInputEl.addEventListener("focus", () => {
-    if (window.innerWidth <= 900) mobileChatBtn.classList.add("hide-btn");
+    if (window.innerWidth <= 900) {
+      mobileChatBtn.classList.add("hide-btn");
+    }
   });
-  chatInputEl.addEventListener("blur", () => {
-    // slight delay for smoothness
-    setTimeout(() => {
-      if (chatMessagesEl && chatMessagesEl.scrollTop <= 10) {
-        mobileChatBtn.classList.remove("hide-btn");
-      }
-    }, 200);
-  });
+
+  // dont show immediately on blur - wait a bit or let scroll handle it
 }
