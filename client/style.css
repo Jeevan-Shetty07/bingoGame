@@ -38,6 +38,7 @@
   border-radius: 10px;
 }
 
+/* vanta bg - that cool 3d mesh thingy */
 #vanta-bg {
   position: fixed;
   top: 0;
@@ -59,6 +60,7 @@
   background: radial-gradient(circle at 50% 50%, rgba(0, 242, 255, 0.05), transparent 70%);
 }
 
+/* those floaty purple and cyan blobs */
 .mesh-blob {
   position: absolute;
   border-radius: 50%;
@@ -70,7 +72,7 @@
 .mb1 { width: 400px; height: 400px; background: var(--secondary); top: -100px; left: -100px; }
 .mb2 { width: 300px; height: 300px; background: var(--primary); bottom: -100px; right: -100px; animation-duration: 25s; }
 
-/* Scanlines Removed for Vanta Clarity */
+/* removed scanlines cuz vanta looks bettr without em */
 .scanlines {
   display: none;
 }
@@ -135,6 +137,7 @@ body {
   height: 100%;
 }
 
+/* all the glass cards look like this - stay glassmorphism */
 .card {
   background: var(--panel);
   border: 1px solid var(--border);
@@ -173,7 +176,7 @@ body {
   margin-top: 4px;
 }
 
-/* Screens */
+/* diffrent screens logic */
 .screen { display: none; }
 .screen.active { display: block; animation: slideIn 0.4s ease-out; }
 
@@ -182,7 +185,7 @@ body {
   100% { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-/* Inputs & Buttons */
+/* buttons and inputs - pretty standard stuff */
 .input {
   width: 100%;
   background: rgba(0,0,0,0.3);
@@ -247,7 +250,7 @@ body {
   background: rgba(255,255,255,0.1);
 }
 
-/* Lobby UI */
+/* lobby look n feel */
 .data-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -318,7 +321,7 @@ body {
   font-weight: 600;
 }
 
-/* Game Interface */
+/* the game interface where u actualy play */
 .gameCard { padding: 12px; } /* Minimized padding */
 .turnText {
   font-size: 14px;
@@ -381,7 +384,7 @@ body {
 .timerLabel { font-size: 12px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; margin-bottom: 4px; }
 .timerValue { font-size: 32px; font-weight: 900; color: var(--accent); }
 
-/* The Board */
+/* the actual board with the numbers */
 .board {
   display: grid;
   gap: 6px;
@@ -406,12 +409,14 @@ body {
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* hover effect on cells so u knw what u clickin */
 .cell:hover {
   background: rgba(255, 255, 255, 0.1);
   border-color: var(--primary);
   transform: scale(1.05);
 }
 
+/* marked cell - make it glow blue */
 .cell.marked {
   background: var(--primary);
   color: var(--bg);
@@ -425,7 +430,7 @@ body {
   cursor: not-allowed;
 }
 
-/* Progress & Bingo */
+/* progress letters and bingo button */
 .bingoProgress {
   display: flex;
   justify-content: center;
@@ -462,7 +467,7 @@ body {
   100% { transform: scale(1); box-shadow: 0 4px 20px var(--accent-glow); }
 }
 
-/* Cyber-Glass Winner Realignment */
+/* the big winner card with the HUD shapes - super cool */
 .winnerCard {
   text-align: center;
   padding: 60px 40px;
@@ -485,6 +490,7 @@ body {
   100% { box-shadow: 0 0 80px var(--secondary-glow); transform: scale(1.02); }
 }
 
+/* those rotating rings for the trophy */
 .victory-ring {
   position: absolute;
   top: 60px;
@@ -575,7 +581,7 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Chat */
+/* chat box on the side view */
 .chatCard {
   display: flex !important;
   flex-direction: column;
@@ -673,7 +679,7 @@ body {
   box-shadow: 0 0 15px var(--primary-glow);
 }
 
-/* Mobile Chat Drawer Button */
+/* mobile chat button that pops up */
 .chat-drawer-btn {
   display: none;
   position: fixed;
@@ -711,7 +717,7 @@ body {
 
 .chat-drawer-btn .badge.show { display: block; }
 
-/* Toast */
+/* toast notifications like the copy code thing */
 .toast {
   position: fixed;
   bottom: 24px;
@@ -729,7 +735,7 @@ body {
 
 .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
-/* Winner Enhancements */
+/* extra juice for the winner screen */
 .winner-overlay {
   position: fixed;
   inset: 0;

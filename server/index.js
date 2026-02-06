@@ -1,4 +1,4 @@
-// server/index.js
+// server/index.js - the main brain of the server
 
 const express = require("express");
 const http = require("http");
@@ -105,7 +105,7 @@ io.on("connection", (socket) => {
     emitCall(roomId);
   });
 
-  /************** CALL NUMBER **************/
+  // handles when some1 calls a numbr
   socket.on("callNumber", ({ roomId, number }) => {
     const room = rooms[roomId];
     if (!room || room.turnLocked) return;
@@ -118,19 +118,19 @@ io.on("connection", (socket) => {
     const ok = callNumber(room, number);
     if (!ok) return;
 
-    // caller instantly done
+    // if u call it u basicly marked it already
     markDone(room, socket.id);
 
     emitCall(roomId);
     emitTurn(roomId);
 
-    // safety unlock after 10s
+    // dont want the game stuck if some1 goes afk lol - unlock after 10s
     setTimeout(() => {
       if (room.turnLocked) unlockAndNext(roomId);
     }, 10_000);
   });
 
-  /************** PLAYER DONE **************/
+  // when players finish markin their board
   socket.on("markDone", ({ roomId }) => {
     const room = rooms[roomId];
     if (!room || !room.turnLocked) return;
@@ -145,7 +145,7 @@ io.on("connection", (socket) => {
     }
   });
 
-  /************** CLAIM BINGO **************/
+  // checking if someone actually won or just faking it
   socket.on("claimBingo", ({ roomId, marked, name }) => {
     const room = rooms[roomId];
     if (!room || room.winner) return;
@@ -162,18 +162,18 @@ io.on("connection", (socket) => {
     });
   });
 
-  /************** REMATCH (NO RELOAD) **************/
+  // restart the game without refreshin the whole page
   socket.on("rematch", ({ roomId }) => {
     const room = rooms[roomId];
     if (!room) return;
 
-    // only host can restart (optional)
+    // host is the boss here
     if (room.hostId !== socket.id) {
       socket.emit("errorMsg", "Only host can start rematch!");
       return;
     }
 
-    // reset and generate new boards
+    // clear stuff and gnerate new boards for evryone
     startGame(room);
 
     room.players.forEach((p) => {
@@ -189,7 +189,7 @@ io.on("connection", (socket) => {
     console.log("Rematch started in room:", roomId);
   });
 
-  /************** CHAT **************/
+  // basic chat stuff so ppl can talk
   socket.on("sendMessage", ({ roomId, message, name }) => {
     if (!roomId || !message) return;
     io.to(roomId).emit("receiveMessage", {

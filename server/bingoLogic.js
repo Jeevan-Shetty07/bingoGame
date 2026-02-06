@@ -1,14 +1,15 @@
-// server/bingoLogic.js
+// server/bingoLogic.js - the math behind the wins
 
 function isBingo(marked) {
   const n = marked.length;
 
-  // 
+  // checking rows to see if evrything is marked
   for (let i = 0; i < n; i++) {
     if (marked[i].every(Boolean)) return true;
   }
 
   
+  // now check columns.. same logic basicly
   for (let j = 0; j < n; j++) {
     let ok = true;
     for (let i = 0; i < n; i++) {
@@ -20,7 +21,7 @@ function isBingo(marked) {
     if (ok) return true;
   }
 
-  // diag 1
+  // first diagonal line from top left
   let d1 = true;
   for (let i = 0; i < n; i++) {
     if (!marked[i][i]) {
@@ -30,7 +31,7 @@ function isBingo(marked) {
   }
   if (d1) return true;
 
-  // diag 2
+  // other diagonal line from top right
   let d2 = true;
   for (let i = 0; i < n; i++) {
     if (!marked[i][n - 1 - i]) {

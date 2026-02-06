@@ -1,9 +1,9 @@
-// client/script.js
+// client/script.js - all the magic happens here 
 // --- CONFIGURATION & INITIALIZATION ---
 let socket = io();
 let vantaEffect = null;
 
-// Initialize Vanta Background
+// start the 3d net thingy with vanta
 window.addEventListener('DOMContentLoaded', () => {
     vantaEffect = VANTA.NET({
         el: "#vanta-bg",
@@ -22,7 +22,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-/******** STATE ********/
+/******** some vars to keep track of stuff ********/
 let currentRoomId = null;
 let players = [];
 let currentTurnIndex = 0;
@@ -46,7 +46,7 @@ let doneSentForThisCall = false;
 let remainingPlayers = 0;
 let pendingNames = [];
 
-/******** SCREEN ********/
+/******** change the screen view ********/
 function show(id) {
   const screens = document.querySelectorAll(".screen");
   const sideView = document.querySelector(".side-view");
@@ -62,14 +62,14 @@ function show(id) {
     target.style.display = "flex";
     target.classList.add("active");
 
-    // GSAP Cinematic Entrance
+    // gsap makes it look smooth like butter
     const directChildren = target.children;
     gsap.fromTo(directChildren, 
       { opacity: 0, y: 20, scale: 0.95 },
       { opacity: 1, y: 0, scale: 1, duration: 0.5, stagger: 0.1, ease: "power2.out" }
     );
     
-    // Additional "juice" for specific screens
+    // show some juice when we win!!
     if (id === 'winner') {
       confetti({
         particleCount: 150,
@@ -80,7 +80,7 @@ function show(id) {
     }
   }
 
-  // Sidebar Visibility Management
+  // hide/show the side bar depending on what screen we r on
   const sidebarScreens = ["home", "create", "join"];
   if (sideView) {
     if (sidebarScreens.includes(id)) {
@@ -142,7 +142,7 @@ function updateChatBadge() {
   
   if (mobileBadge) {
     mobileBadge.innerText = unreadCount;
-    // Check if unreadCount > 0 to show badge
+    // if we got unread msgs show it on the badge
     if (unreadCount > 0) {
       mobileBadge.style.display = "block";
       mobileBadge.innerText = unreadCount;
@@ -178,7 +178,7 @@ function copyRoomCode() {
 
     })
     .catch(() => {
-      // fallback if clipboard not allowed
+      // if the clipboard fails try another way (old school)
       const temp = document.createElement("input");
       temp.value = code;
       document.body.appendChild(temp);
@@ -189,7 +189,7 @@ function copyRoomCode() {
     });
 }
 
-/******** ROOM ********/
+/******** room related stuff ********/
 function createRoom() {
   const name = createName.value.trim();
   const size = Number(boardSize.value);
@@ -210,7 +210,7 @@ function startGame() {
   socket.emit("startGame", currentRoomId);
 }
 
-/******** SOCKET ********/
+/******** socket listeneres ********/
 socket.on("roomJoined", (room) => {
   currentRoomId = room.id;
   updateLobby(room);
@@ -282,7 +282,7 @@ socket.on(
       void calledBox.offsetWidth;
       calledBox.classList.add("pop");
 
-      // AUTOMATIC MARKING: When a number is called, find it and mark it
+      // automatic marking cuz manual is too hard lol - finds the num and marks it
       markNumberOnBoard(call.number);
     } else {
       lastCalled.innerText = "-";
@@ -292,9 +292,9 @@ socket.on(
     updateBoardUI();
     updateBingoButton();
 
-    // Since it's automatic now, we can instantly send done
+    // since its auto now we just send done sraight away
     if (call) {
-      setTimeout(() => sendDoneOnce(), 500); // Small delay for visual feel
+      setTimeout(() => sendDoneOnce(), 500); // small delay so it doesnt feel too fast
     }
   },
 );
@@ -319,12 +319,12 @@ socket.on("winnerDeclared", ({ winnerName: wName }) => {
   gameOver = true;
   winnerName.innerText = wName;
   
-  // Stats
+  // stats of the game
   document.getElementById("totalCalls").innerText = calledNumbers.length;
   const elapsed = Math.floor((Date.now() - gameStartTime) / 1000);
   document.getElementById("totalTime").innerText = `${elapsed}s`;
 
-  // Flash
+  // big screen flash for the winner
   const flash = document.getElementById("victoryFlash");
   flash.classList.remove("flash-anim");
   void flash.offsetWidth;
@@ -352,14 +352,14 @@ socket.on("receiveMessage", ({ name, message, time }) => {
   container.appendChild(msgDiv);
   container.scrollTop = container.scrollHeight;
 
-  // Only show unread badger on mobile toggle
+  // count unread if the chat is closed
   if (!chatOpen && window.innerWidth <= 900) {
     unreadCount++;
     updateChatBadge();
   }
 });
 
-/******** LOBBY ********/
+/******** lobby updates ********/
 function updateLobby(room) {
   show("lobby");
   players = room.players;
@@ -440,10 +440,10 @@ function renderBoard(size) {
     for (let j = 0; j < size; j++) {
       const c = document.createElement("div");
 
-      // UI only: entrance animation class
+      // entrance anim for the cells
       c.className = "cell enter";
 
-      // UI only: stagger delay so cells appear one by one
+      // stagger delay so cells pop in one by one
       const delay = (i * size + j) * 35; // ms
       c.style.animationDelay = `${delay}ms`;
 
@@ -518,7 +518,7 @@ function startTimer() {
 
     timeLeft.innerText = t;
 
-    // UI only: danger pulse when time is low
+    // make it red when time is runnin out
     if (t <= 3) {
       timeLeft.style.color = "#ef4444";
       timeLeft.style.textShadow = "0 0 12px rgba(239,68,68,0.7)";
@@ -603,7 +603,7 @@ function claimBingo() {
   });
 }
 
-/******** REMATCH (NO RELOAD) ********/
+/******** restart withut refresh ********/
 function rematch() {
   socket.emit("rematch", { roomId: currentRoomId });
   show("game");
