@@ -621,6 +621,7 @@ function showToast(msg) {
 let lastScrollTop = 0;
 const chatMessagesEl = document.getElementById("chatMessages");
 const mobileChatBtn = document.getElementById("chatMobileBtn");
+const chatInputEl = document.getElementById("chatInput");
 
 if (chatMessagesEl) {
   chatMessagesEl.addEventListener("scroll", () => {
@@ -628,13 +629,32 @@ if (chatMessagesEl) {
     if (window.innerWidth > 900) return;
 
     let st = chatMessagesEl.scrollTop;
-    if (st > lastScrollTop && st > 50) {
-      // scrollin down - hide the button so it doesnt block the send btn
+    
+    // ignore tiny movements
+    if (Math.abs(lastScrollTop - st) <= 5) return;
+
+    if (st > lastScrollTop && st > 10) {
+      // scrollin down - hide it so we can see stuff
       mobileChatBtn.classList.add("hide-btn");
     } else {
-      // scrollin up or at the top - show it again
+      // scrollin up or at the top - bring it back
       mobileChatBtn.classList.remove("hide-btn");
     }
-    lastScrollTop = st <= 0 ? 0 : st;
+    lastScrollTop = st;
   }, { passive: true });
+}
+
+// hide when typin cuz it blocks the send btn
+if (chatInputEl) {
+  chatInputEl.addEventListener("focus", () => {
+    if (window.innerWidth <= 900) mobileChatBtn.classList.add("hide-btn");
+  });
+  chatInputEl.addEventListener("blur", () => {
+    // slight delay for smoothness
+    setTimeout(() => {
+      if (chatMessagesEl && chatMessagesEl.scrollTop <= 10) {
+        mobileChatBtn.classList.remove("hide-btn");
+      }
+    }, 200);
+  });
 }

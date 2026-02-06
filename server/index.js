@@ -21,6 +21,7 @@ const { isBingo } = require("./bingoLogic");
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
+const turnTimeouts = {}; // keepin track of idle players 
 
 app.use(express.static("client"));
 
@@ -47,6 +48,16 @@ function emitTurn(roomId) {
     remaining: remainingCount(room),
     pendingNames: getPendingNames(room),
   });
+
+  // clear then start a new skip timer for lazy players
+  clearTimeout(turnTimeouts[roomId]);
+  if (!room.turnLocked && !room.winner && room.gameStarted) {
+    turnTimeouts[roomId] = setTimeout(() => {
+      console.log(`skipping lazy player in room ${roomId}`);
+      nextTurn(room);
+      emitTurn(roomId);
+    }, 15_000); 
+  }
 }
 
 function emitCall(roomId) {
@@ -114,6 +125,9 @@ io.on("connection", (socket) => {
     if (!current) return;
 
     if (current.id !== socket.id) return;
+
+    // clear the idle timer cuz they actualy did somethin
+    clearTimeout(turnTimeouts[roomId]);
 
     const ok = callNumber(room, number);
     if (!ok) return;
