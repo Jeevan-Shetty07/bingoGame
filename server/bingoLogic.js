@@ -3,12 +3,12 @@
 function isBingo(marked) {
   const n = marked.length;
 
-  // rows
+  // 
   for (let i = 0; i < n; i++) {
     if (marked[i].every(Boolean)) return true;
   }
 
-  // cols
+  
   for (let j = 0; j < n; j++) {
     let ok = true;
     for (let i = 0; i < n; i++) {

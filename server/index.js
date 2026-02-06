@@ -188,6 +188,16 @@ io.on("connection", (socket) => {
 
     console.log("Rematch started in room:", roomId);
   });
+
+  /************** CHAT **************/
+  socket.on("sendMessage", ({ roomId, message, name }) => {
+    if (!roomId || !message) return;
+    io.to(roomId).emit("receiveMessage", {
+      name,
+      message,
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    });
+  });
 });
 
 const PORT = process.env.PORT || 3000;

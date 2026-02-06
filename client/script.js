@@ -1,5 +1,26 @@
 // client/script.js
-const socket = io();
+// --- CONFIGURATION & INITIALIZATION ---
+let socket = io();
+let vantaEffect = null;
+
+// Initialize Vanta Background
+window.addEventListener('DOMContentLoaded', () => {
+    vantaEffect = VANTA.NET({
+        el: "#vanta-bg",
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        minHeight: 200.00,
+        minWidth: 200.00,
+        scale: 1.00,
+        scaleMobile: 1.00,
+        color: 0x00f2ff, // Primary Cyan
+        backgroundColor: 0x0d111c,
+        points: 10.00,
+        maxDistance: 20.00,
+        spacing: 15.00
+    });
+});
 
 /******** STATE ********/
 let currentRoomId = null;
@@ -11,9 +32,13 @@ let myBoard = [];
 let marked = [];
 let calledNumbers = [];
 let currentCall = null;
+let myName = "";
+let unreadCount = 0;
+let chatOpen = false;
 
 let timerInt = null;
 let gameOver = false;
+let gameStartTime = 0;
 
 let maskedNumbers = new Set();
 let doneSentForThisCall = false;
@@ -23,11 +48,62 @@ let pendingNames = [];
 
 /******** SCREEN ********/
 function show(id) {
-  document
-    .querySelectorAll(".screen")
-    .forEach((s) => s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
+  const screens = document.querySelectorAll(".screen");
+  const sideView = document.querySelector(".side-view");
+  const mobileToggle = document.getElementById("chatMobileBtn");
+
+  screens.forEach((s) => {
+    s.classList.remove("active");
+    s.style.display = "none";
+  });
+
+  const target = document.getElementById(id);
+  if (target) {
+    target.style.display = "flex";
+    target.classList.add("active");
+
+    // GSAP Cinematic Entrance
+    const directChildren = target.children;
+    gsap.fromTo(directChildren, 
+      { opacity: 0, y: 20, scale: 0.95 },
+      { opacity: 1, y: 0, scale: 1, duration: 0.5, stagger: 0.1, ease: "power2.out" }
+    );
+    
+    // Additional "juice" for specific screens
+    if (id === 'winner') {
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#00f2ff', '#7000ff', '#ffffff']
+      });
+    }
+  }
+
+  // Sidebar Visibility Management
+  const sidebarScreens = ["home", "create", "join"];
+  if (sideView) {
+    if (sidebarScreens.includes(id)) {
+      sideView.style.display = "none";
+      if (mobileToggle) mobileToggle.style.display = "none";
+    } else {
+      // For game sessions, manage sidebar based on width
+      if (window.innerWidth > 900) {
+        sideView.style.display = "flex";
+        sideView.classList.remove("open");
+        if (mobileToggle) mobileToggle.style.display = "none";
+      } else {
+        // KEEP FLEX on mobile so the CSS transform slide-in works!
+        sideView.style.display = "flex"; 
+        sideView.classList.toggle("open", chatOpen);
+        if (mobileToggle) mobileToggle.style.display = "flex";
+      }
+    }
+  }
 }
+
+// Set initial state
+show("home");
 
 function goHome() {
   gameOver = false;
@@ -39,6 +115,58 @@ function goToCreate() {
 }
 function goToJoin() {
   show("join");
+}
+
+function toggleChatDrawer() {
+  if (window.innerWidth > 900) return; 
+  
+  const sideView = document.querySelector(".side-view");
+  chatOpen = !chatOpen;
+  
+  if (sideView) sideView.classList.toggle("open", chatOpen);
+  
+  if (chatOpen) {
+    unreadCount = 0;
+    updateChatBadge();
+  }
+}
+
+function updateChatBadge() {
+  const badge = document.getElementById("unreadBadge");
+  const mobileBadge = document.getElementById("unreadBadgeMobile");
+  
+  if (badge) {
+    badge.innerText = unreadCount;
+    badge.classList.toggle("show", unreadCount > 0);
+  }
+  
+  if (mobileBadge) {
+    mobileBadge.innerText = unreadCount;
+    // Check if unreadCount > 0 to show badge
+    if (unreadCount > 0) {
+      mobileBadge.style.display = "block";
+      mobileBadge.innerText = unreadCount;
+    } else {
+      mobileBadge.style.display = "none";
+    }
+  }
+}
+
+function sendChatMessage() {
+  const input = document.getElementById("chatInput");
+  const msg = input.value.trim();
+  if (!msg || !currentRoomId) return;
+
+  socket.emit("sendMessage", {
+    roomId: currentRoomId,
+    message: msg,
+    name: myName || "User"
+  });
+  input.value = "";
+}
+
+function checkChatEnter(e) {
+  if (e.key === "Enter") sendChatMessage();
 }
 function copyRoomCode() {
   const code = roomCode?.innerText?.trim();
@@ -66,6 +194,7 @@ function createRoom() {
   const name = createName.value.trim();
   const size = Number(boardSize.value);
   if (!name) return alert("Enter name");
+  myName = name;
   socket.emit("createRoom", { name, boardSize: size });
 }
 
@@ -73,6 +202,7 @@ function joinRoom() {
   const name = joinName.value.trim();
   const roomId = joinRoomId.value.trim();
   if (!name || !roomId) return alert("Fill all fields");
+  myName = name;
   socket.emit("joinRoom", { name, roomId });
 }
 
@@ -107,6 +237,7 @@ socket.on("gameStarted", ({ board, boardSize }) => {
   remainingPlayers = 0;
   pendingNames = [];
 
+  gameStartTime = Date.now();
   renderBoard(boardSize);
   updateBingoButton();
   show("game");
@@ -150,29 +281,82 @@ socket.on(
       calledBox.classList.remove("pop");
       void calledBox.offsetWidth;
       calledBox.classList.add("pop");
+
+      // AUTOMATIC MARKING: When a number is called, find it and mark it
+      markNumberOnBoard(call.number);
     } else {
       lastCalled.innerText = "-";
-    }
-
-    // if number not in my board, instantly done
-    if (call && !boardHasNumber(call.number)) {
-      sendDoneOnce();
     }
 
     startTimer();
     updateBoardUI();
     updateBingoButton();
+
+    // Since it's automatic now, we can instantly send done
+    if (call) {
+      setTimeout(() => sendDoneOnce(), 500); // Small delay for visual feel
+    }
   },
 );
 
+function markNumberOnBoard(num) {
+  for (let i = 0; i < myBoard.length; i++) {
+    for (let j = 0; j < myBoard.length; j++) {
+      if (myBoard[i][j] === num) {
+        marked[i][j] = true;
+        // Find cell and add marked class
+        const cells = document.querySelectorAll(".cell");
+        const idx = i * myBoard.length + j;
+        if (cells[idx]) cells[idx].classList.add("marked");
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 socket.on("winnerDeclared", ({ winnerName: wName }) => {
   gameOver = true;
-  winnerName.innerText = `Winner: ${wName}`;
+  winnerName.innerText = wName;
+  
+  // Stats
+  document.getElementById("totalCalls").innerText = calledNumbers.length;
+  const elapsed = Math.floor((Date.now() - gameStartTime) / 1000);
+  document.getElementById("totalTime").innerText = `${elapsed}s`;
+
+  // Flash
+  const flash = document.getElementById("victoryFlash");
+  flash.classList.remove("flash-anim");
+  void flash.offsetWidth;
+  flash.classList.add("flash-anim");
+
   show("winner");
 });
 
 socket.on("errorMsg", (msg) => {
   alert(msg);
+});
+
+socket.on("receiveMessage", ({ name, message, time }) => {
+  const container = document.getElementById("chatMessages");
+  if (!container) return;
+  const isMe = name === myName;
+
+  const msgDiv = document.createElement("div");
+  msgDiv.className = `msg ${isMe ? "me" : ""}`;
+  msgDiv.innerHTML = `
+    <div class="sender">${name}</div>
+    <div class="content">${message}</div>
+    <div class="time">${time}</div>
+  `;
+  container.appendChild(msgDiv);
+  container.scrollTop = container.scrollHeight;
+
+  // Only show unread badger on mobile toggle
+  if (!chatOpen && window.innerWidth <= 900) {
+    unreadCount++;
+    updateChatBadge();
+  }
 });
 
 /******** LOBBY ********/
@@ -191,6 +375,9 @@ function updateLobby(room) {
     li.id = "p" + i;
     playersList.appendChild(li);
   });
+
+  const nodeCountEl = document.getElementById("nodeCount");
+  if (nodeCountEl) nodeCountEl.innerText = players.length.toString().padStart(2, "0");
 
   startBtn.style.display = room.hostId === socket.id ? "block" : "none";
 }
@@ -364,7 +551,44 @@ function maskIfMissed(number) {
 
 /******** BINGO ********/
 function updateBingoButton() {
-  bingoBtn.disabled = !isBingo(marked) || gameOver;
+  const completedLines = countBingoLines(marked);
+  updateProgressUI(completedLines);
+  bingoBtn.disabled = completedLines < 5 || gameOver;
+}
+
+function countBingoLines(m) {
+  let lines = 0;
+  const size = m.length;
+
+  // Rows
+  for (let i = 0; i < size; i++) {
+    if (m[i].every(v => v)) lines++;
+  }
+  // Cols
+  for (let j = 0; j < size; j++) {
+    let col = true;
+    for (let i = 0; i < size; i++) {
+        if (!m[i][j]) { col = false; break; }
+    }
+    if (col) lines++;
+  }
+  // Diagonals
+  let d1 = true, d2 = true;
+  for (let i = 0; i < size; i++) {
+    if (!m[i][i]) d1 = false;
+    if (!m[i][size - 1 - i]) d2 = false;
+  }
+  if (d1) lines++;
+  if (d2) lines++;
+
+  return lines;
+}
+
+function updateProgressUI(lines) {
+  const letters = document.querySelectorAll(".bingoProgress .letter");
+  letters.forEach((l, i) => {
+    l.classList.toggle("active", i < lines);
+  });
 }
 
 function claimBingo() {
