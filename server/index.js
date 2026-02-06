@@ -83,7 +83,10 @@ function unlockAndNext(roomId) {
 }
 
 io.on("connection", (socket) => {
-  console.log("Connected:", socket.id);
+  console.log(`new node connected: ${socket.id}`);
+  
+  // let the client know what time it is on the server so they can sync up
+  socket.emit("serverTime", Date.now());
 
   socket.on("createRoom", ({ name, boardSize }) => {
     const roomId = createRoom(socket.id, name, boardSize);

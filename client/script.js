@@ -46,6 +46,9 @@ let doneSentForThisCall = false;
 let remainingPlayers = 0;
 let pendingNames = [];
 
+// clock sync shift to keep evryone on the same page
+let serverTimeOffset = 0; 
+
 /******** change the screen view ********/
 function show(id) {
   const screens = document.querySelectorAll(".screen");
@@ -214,6 +217,12 @@ function startGame() {
 }
 
 /******** socket listeneres ********/
+socket.on("serverTime", (serverMs) => {
+  // calculate how much our clock is off from the server
+  serverTimeOffset = serverMs - Date.now();
+  console.log(`sync'd with server! offset: ${serverTimeOffset}ms`);
+});
+
 socket.on("roomJoined", (room) => {
   currentRoomId = room.id;
   updateLobby(room);
@@ -508,45 +517,46 @@ function updateBoardUI() {
 /******** TIMER ********/
 const timerLabelEl = document.getElementById("timeLeft");
 
-function startTimer(seconds = 10) {
+function startTimer() {
   clearInterval(timerInt);
-  if (seconds <= 0) {
+  
+  if (!currentCall || !currentCall.expiresAt) {
     if (timerLabelEl) timerLabelEl.innerText = "0";
     return;
   }
 
-  let localTimeLeft = seconds;
-  if (timerLabelEl) {
-    timerLabelEl.innerText = localTimeLeft;
-    timerLabelEl.style.color = "white";
-    timerLabelEl.style.textShadow = "none";
-  }
+  const updateTicking = () => {
+    // calculate time left usin the server offset so evry device is sync'd
+    const serverNow = Date.now() + serverTimeOffset;
+    const diff = currentCall.expiresAt - serverNow;
+    const t = Math.max(0, Math.ceil(diff / 1000));
 
-  timerInt = setInterval(() => {
-    localTimeLeft--;
-    
     if (timerLabelEl) {
-      timerLabelEl.innerText = Math.max(0, localTimeLeft);
+      timerLabelEl.innerText = t;
 
       // turn red when we r low on time
-      if (localTimeLeft <= 3) {
+      if (t <= 3) {
         timerLabelEl.style.color = "#ef4444";
         timerLabelEl.style.textShadow = "0 0 12px rgba(239,68,68,0.7)";
+      } else {
+        timerLabelEl.style.color = "white";
+        timerLabelEl.style.textShadow = "none";
       }
     }
 
-    if (localTimeLeft <= 0) {
+    if (t <= 0) {
       clearInterval(timerInt);
-      if (currentCall) {
-        maskIfMissed(currentCall.number);
-        sendDoneOnce();
-        updateBoardUI();
-        updateBingoButton();
-      }
+      maskIfMissed(currentCall.number);
+      sendDoneOnce();
+      updateBoardUI();
+      updateBingoButton();
     }
-
+    
     if (turnLocked) setTurnUI();
-  }, 1000);
+  };
+
+  updateTicking(); 
+  timerInt = setInterval(updateTicking, 200); // 200ms is fine for smooth display
 }
 
 function maskIfMissed(number) {
@@ -628,37 +638,45 @@ function showToast(msg) {
 
   setTimeout(() => t.classList.remove("show"), 1200);
 }
-// --- SCROLL DETECTION FOR MOBILE CHAT ---
+// --- SCROLL & FOCUS FOR MOBILE CHAT ---
+// this logic is basicly to stop the blue toggle btn from blockin the send btn
 let lastScrollTop = 0;
 const chatMessagesEl = document.getElementById("chatMessages");
 const mobileChatBtn = document.getElementById("chatMobileBtn");
 const chatInputEl = document.getElementById("chatInput");
 
 if (chatMessagesEl) {
+  // detect which way they scrollin
   chatMessagesEl.addEventListener("scroll", () => {
-    // only on mobile/small screens
     if (window.innerWidth > 900) return;
 
     let st = chatMessagesEl.scrollTop;
     
-    // if scrollin down more than a tiny bit hide it
     if (st > lastScrollTop && st > 10) {
-      mobileChatBtn.classList.add("hide-btn");
-    } else if (st < lastScrollTop || st <= 0) {
-      // scrollin up? bring it back!
-      mobileChatBtn.classList.remove("hide-btn");
+      // scrollin down? get that btn outta here
+      if (mobileChatBtn) mobileChatBtn.classList.add("hide-btn");
+    } else if (st < lastScrollTop || st <= 10) {
+      // scrollin up or at the top? bring it back
+      if (mobileChatBtn) mobileChatBtn.classList.remove("hide-btn");
     }
     lastScrollTop = st;
   }, { passive: true });
 }
 
-// hide when focusin the input - prevents overlap wid the send btn
+// hide as soon as they tap the box to type
 if (chatInputEl) {
   chatInputEl.addEventListener("focus", () => {
-    if (window.innerWidth <= 900) {
+    if (window.innerWidth <= 900 && mobileChatBtn) {
       mobileChatBtn.classList.add("hide-btn");
     }
   });
 
-  // dont show immediately on blur - wait a bit or let scroll handle it
+  // only bring it back if we r at the top or not scrollin
+  chatInputEl.addEventListener("blur", () => {
+    setTimeout(() => {
+      if (window.innerWidth <= 900 && mobileChatBtn && chatMessagesEl && chatMessagesEl.scrollTop <= 10) {
+        mobileChatBtn.classList.remove("hide-btn");
+      }
+    }, 300);
+  });
 }
