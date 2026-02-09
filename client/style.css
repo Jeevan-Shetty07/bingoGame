@@ -141,6 +141,7 @@ body {
 
 
 /* refined desktop chat layout */
+/* refined desktop chat layout */
 .side-view {
   width: 380px;
   display: flex !important; /* Force flex */
@@ -156,15 +157,6 @@ body {
 }
 
 /* Logic to hide chat on landing/create/join pages */
-/* effectively: if #home, #create, or #join is active, hide side-view */
-/* We can use the sibling selector or :has if supported, but let's stick to simple sibling for now if structure permits */
-/* Structure: .main-view > section.active */
-/* .side-view is sibling to .main-view */
-
-/* Since side-view is a sibling of main-view, we can't easily detect which child of main-view is active via CSS alone 
-   UNLESS we add a class to the body or app container. 
-   BUT, we can use the :has() pseudo-class which is widely supported now. */
-
 #app:has(#home.active) .side-view,
 #app:has(#create.active) .side-view,
 #app:has(#join.active) .side-view {
@@ -182,12 +174,23 @@ body {
   flex: 1;
   display: flex !important;
   flex-direction: column;
+  width: 100%;
+  height: 100%;
   background: transparent;
   border: none;
   box-shadow: none;
   border-radius: 0;
-  height: 100%;
   overflow: hidden;
+}
+
+/* Force header visibility */
+.side-view .chatHeader {
+  flex-shrink: 0;
+  display: flex !important;
+  min-height: 70px; /* Force height */
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid var(--border);
+  z-index: 10;
 }
 
 /* Reuse the robust flex structure for desktop too */
@@ -197,20 +200,24 @@ body {
   flex-direction: column;
   min-height: 0;
   overflow: hidden;
+  position: relative;
 }
 
 .side-view .chatMessages {
   flex: 1;
   overflow-y: auto;
   padding: 20px;
-  padding-bottom: 10px;
+  padding-bottom: 20px;
 }
 
 .side-view .chatInputRow {
   flex-shrink: 0;
-  background: transparent;
+  display: flex !important; /* Force flex */
+  background: var(--panel);
   padding: 16px;
   border-top: 1px solid var(--border);
+  z-index: 20;
+  min-height: 80px; /* Ensure space for input */
 }
 
 
