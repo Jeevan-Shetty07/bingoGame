@@ -698,80 +698,26 @@ body {
   100% { top: 100vh; opacity: 0; }
 }
 
-/* Winner card - new design */
+/* Winner card - no card, just content on background */
 .winnerCard {
   position: relative;
-  max-width: 600px;
+  max-width: 700px;
   margin: 0 auto;
   padding: 50px 40px;
-  background: rgba(13, 17, 28, 0.85);
-  border: 2px solid var(--primary);
-  border-radius: 8px;
-  backdrop-filter: blur(20px);
-  box-shadow: 
-    0 0 60px var(--primary-glow),
-    inset 0 0 60px rgba(0, 242, 255, 0.03);
+  background: transparent;
+  border: none;
   z-index: 10;
 }
 
-/* Animated border lines */
+/* Animated border lines - hidden */
 .border-lines {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
+  display: none;
 }
 
-.line-h, .line-v {
-  position: absolute;
-  background: var(--primary);
-  box-shadow: 0 0 10px var(--primary-glow);
-}
-
-.line-h {
-  height: 2px;
-  width: 0;
-  animation: lineGrowH 1.5s ease-out forwards;
-}
-
-.line-v {
-  width: 2px;
-  height: 0;
-  animation: lineGrowV 1.5s ease-out forwards;
-}
-
-.top { top: 0; left: 0; animation-delay: 0s; }
-.right { top: 0; right: 0; animation-delay: 0.3s; }
-.bottom { bottom: 0; right: 0; animation-delay: 0.6s; }
-.left { bottom: 0; left: 0; animation-delay: 0.9s; }
-
-@keyframes lineGrowH {
-  to { width: 100%; }
-}
-
-@keyframes lineGrowV {
-  to { height: 100%; }
-}
-
-/* Corner brackets */
+/* Corner brackets - hidden */
 .corner-brackets {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
+  display: none;
 }
-
-.bracket {
-  position: absolute;
-  width: 30px;
-  height: 30px;
-  border: 3px solid var(--primary);
-  opacity: 0;
-  animation: bracketFadeIn 0.5s 1.2s forwards;
-}
-
-.bracket.tl { top: -2px; left: -2px; border-right: none; border-bottom: none; }
-.bracket.tr { top: -2px; right: -2px; border-left: none; border-bottom: none; }
-.bracket.bl { bottom: -2px; left: -2px; border-right: none; border-top: none; }
-.bracket.br { bottom: -2px; right: -2px; border-left: none; border-top: none; }
 
 @keyframes bracketFadeIn {
   to { opacity: 1; }
@@ -1056,6 +1002,7 @@ body {
   display: flex !important;
   flex-direction: column;
   overflow: hidden;
+  min-height: 0;
 }
 
 .chatMessages {
