@@ -689,7 +689,7 @@ if (chatInputEl) {
       }
     }, 300);
   });
-  });
+
 
   // --- Visual Viewport Fix for Mobile Chat ---
   // This handles the keyboard pushing up the viewport
