@@ -482,22 +482,18 @@ body {
   text-align: center;
   padding: 60px 40px;
   background: var(--panel);
-  border: 1px solid var(--primary);
-  /* Sharp HUD Geometry */
-  clip-path: polygon(
-    0 15%, 5% 0, 95% 0, 100% 15%, 
-    100% 85%, 95% 100%, 5% 100%, 0 85%
-  );
+  border: 2px solid var(--primary);
+  border-radius: 12px;
   backdrop-filter: blur(30px);
   position: relative;
-  box-shadow: 0 0 60px var(--primary-glow);
+  box-shadow: 0 0 60px var(--primary-glow), inset 0 0 40px rgba(0, 242, 255, 0.05);
   animation: hudPulse 4s infinite alternate ease-in-out;
   margin-top: 20px;
 }
 
 @keyframes hudPulse {
-  0% { box-shadow: 0 0 40px var(--primary-glow); transform: scale(1); }
-  100% { box-shadow: 0 0 80px var(--secondary-glow); transform: scale(1.02); }
+  0% { box-shadow: 0 0 40px var(--primary-glow), inset 0 0 40px rgba(0, 242, 255, 0.05); transform: scale(1); }
+  100% { box-shadow: 0 0 80px var(--secondary-glow), inset 0 0 60px rgba(112, 0, 255, 0.08); transform: scale(1.01); }
 }
 
 /* those rotating rings for the trophy */
@@ -537,8 +533,8 @@ body {
   position: absolute;
   width: 20px;
   height: 20px;
-  border: 3px solid var(--primary);
-  filter: drop-shadow(0 0 10px var(--primary));
+  border: 2px solid var(--primary);
+  opacity: 0.6;
 }
 .tl { top: 0; left: 0; border-right: none; border-bottom: none; }
 .tr { top: 0; right: 0; border-left: none; border-bottom: none; }
@@ -549,19 +545,18 @@ body {
   font-size: 84px;
   font-weight: 950;
   letter-spacing: 8px;
-  background: linear-gradient(to bottom, #fff, var(--primary), var(--secondary));
+  background: linear-gradient(135deg, var(--primary), var(--secondary), var(--primary));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 20px;
   filter: drop-shadow(0 0 25px var(--primary-glow));
-  animation: titleGlitch 2s infinite;
+  animation: titleShimmer 3s ease-in-out infinite;
 }
 
-@keyframes titleGlitch {
-  0%, 100% { transform: skew(0); }
-  2%, 8% { transform: skew(10deg); filter: hue-rotate(90deg); }
-  4%, 6% { transform: skew(-10deg); filter: hue-rotate(-90deg); }
+@keyframes titleShimmer {
+  0%, 100% { filter: drop-shadow(0 0 25px var(--primary-glow)); }
+  50% { filter: drop-shadow(0 0 40px var(--secondary-glow)); }
 }
 
 .winnerName { 
