@@ -689,6 +689,40 @@ if (chatInputEl) {
       }
     }, 300);
   });
+  });
+
+  // --- Visual Viewport Fix for Mobile Chat ---
+  // This handles the keyboard pushing up the viewport
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', () => {
+      if (window.innerWidth <= 900) {
+        // When keyboard opens, visualViewport height shrinks
+        const viewportHeight = window.visualViewport.height;
+        // Apply this height to the side-view container
+        const sideView = document.querySelector('.side-view');
+        if (sideView) {
+          sideView.style.height = `${viewportHeight}px`;
+          sideView.style.bottom = `${window.innerHeight - viewportHeight - window.scrollY}px`; 
+          // If the keyboard is open, scroll to bottom of chat
+          setTimeout(() => {
+            const chatMessages = document.getElementById("chatMessages");
+            if (chatMessages) chatMessages.scrollTop = chatMessages.scrollHeight;
+          }, 100);
+        }
+      }
+    });
+
+    // Reset on scroll to keep it pinned
+    window.visualViewport.addEventListener('scroll', () => {
+       if (window.innerWidth <= 900) {
+          const sideView = document.querySelector('.side-view');
+          if (sideView) {
+             // Keep it pinned to the visual viewport top 
+             sideView.style.top = `${window.visualViewport.offsetTop}px`;
+          }
+       }
+    });
+  }
 }
 
 
