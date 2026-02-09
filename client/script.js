@@ -5,21 +5,25 @@ let vantaEffect = null;
 
 // start the 3d net thingy with vanta
 window.addEventListener('DOMContentLoaded', () => {
-    vantaEffect = VANTA.NET({
-        el: "#vanta-bg",
-        mouseControls: true,
-        touchControls: true,
-        gyroControls: false,
-        minHeight: 200.00,
-        minWidth: 200.00,
-        scale: 1.00,
-        scaleMobile: 1.00,
-        color: 0x00f2ff, // Primary Cyan
-        backgroundColor: 0x0d111c,
-        points: 10.00,
-        maxDistance: 20.00,
-        spacing: 15.00
-    });
+    if (typeof VANTA !== 'undefined' && VANTA.NET) {
+      vantaEffect = VANTA.NET({
+          el: "#vanta-bg",
+          mouseControls: true,
+          touchControls: true,
+          gyroControls: false,
+          minHeight: 200.00,
+          minWidth: 200.00,
+          scale: 1.00,
+          scaleMobile: 1.00,
+          color: 0x00f2ff, // Primary Cyan
+          backgroundColor: 0x0d111c,
+          points: 10.00,
+          maxDistance: 20.00,
+          spacing: 15.00
+      });
+    } else {
+      console.warn("VANTA or VANTA.NET not found. Skipping background эффект.");
+    }
 });
 
 /******** some vars to keep track of stuff ********/
@@ -146,6 +150,10 @@ function toggleChatDrawer() {
       mobileToggle.classList.remove("hide-btn");
     }
   }
+  if (chatOpen) {
+    unreadCount = 0;
+    updateChatBadge();
+  }
 }
 
 // FIX: Force layout recalculation on resize/zoom to prevent ghost chat
@@ -156,12 +164,6 @@ window.addEventListener("resize", () => {
     show("game");
   }
 });
-  
-  if (chatOpen) {
-    unreadCount = 0;
-    updateChatBadge();
-  }
-}
 
 function updateChatBadge() {
   const badge = document.getElementById("unreadBadge");
