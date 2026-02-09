@@ -146,8 +146,9 @@ body {
   width: 380px;
   display: flex !important;
   flex-direction: column;
-  height: calc(100vh - 40px);
+  height: 85vh; /* Simplified height */
   max-height: 800px;
+  flex-shrink: 0; /* Don't let parent squash me */
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -186,10 +187,11 @@ body {
 /* Header: Fixed height */
 .side-view .chatHeader {
   flex: 0 0 70px; /* Don't grow, don't shrink, exact 70px */
+  min-height: 70px !important; /* Force it */
   display: flex;
   align-items: center;
   padding: 0 24px;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.05); /* Slightly visible bg */
   border-bottom: 1px solid var(--border);
   z-index: 10;
 }
@@ -213,7 +215,8 @@ body {
 
 /* Input: Natural height sized by content */
 .side-view .chatInputRow {
-  flex: 0 0 auto; /* sizing based on content */
+  flex: 0 0 auto;
+  min-height: 80px !important; /* Force it */
   display: flex;
   background: var(--panel);
   padding: 16px;
