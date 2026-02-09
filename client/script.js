@@ -94,6 +94,12 @@ function show(id) {
       if (window.innerWidth > 900) {
         sideView.style.display = "flex";
         sideView.classList.remove("open");
+        // Ensure chat components are visible
+        const header = sideView.querySelector(".chatHeader");
+        const input = sideView.querySelector(".chatInputRow");
+        if(header) header.style.display = "flex";
+        if(input) input.style.display = "flex";
+
         if (mobileToggle) mobileToggle.style.display = "none";
       } else {
         // KEEP FLEX on mobile so the CSS transform slide-in works!
