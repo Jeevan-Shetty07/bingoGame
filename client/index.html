@@ -179,67 +179,84 @@
 
           <!-- the big winner screen - hope u get here! -->
           <section id="winner" class="screen">
-            <div class="winner-overlay">
-              <div class="cinematic-text">CHAMPION_DETECTED</div>
-            </div>
-            
-            <!-- Floating particles for celebration -->
-            <div class="winner-particles">
-              <div class="particle p1">✨</div>
-              <div class="particle p2">⭐</div>
-              <div class="particle p3">💫</div>
-              <div class="particle p4">✨</div>
-              <div class="particle p5">⭐</div>
-              <div class="particle p6">💫</div>
+            <!-- Cyber background effects -->
+            <div class="cyber-grid"></div>
+            <div class="data-streams">
+              <div class="stream s1"></div>
+              <div class="stream s2"></div>
+              <div class="stream s3"></div>
+              <div class="stream s4"></div>
             </div>
             
             <div class="winnerCard">
-              <div class="scan-line-overlay"></div>
-              <div class="victory-ring"></div>
-              <div class="victory-ring-2"></div>
-              <div class="hud-corners">
-                <div class="corner tl"></div><div class="corner tr"></div>
-                <div class="corner bl"></div><div class="corner br"></div>
-              </div>
-              <div class="hud-lines">
-                <div class="line v-left"></div><div class="line v-right"></div>
+              <!-- Animated border lines -->
+              <div class="border-lines">
+                <div class="line-h top"></div>
+                <div class="line-h bottom"></div>
+                <div class="line-v left"></div>
+                <div class="line-v right"></div>
               </div>
               
-              <!-- Enhanced trophy with glow -->
-              <div class="trophy-wrapper">
-                <div class="trophy-glow"></div>
-                <div class="trophy-container">🏆</div>
+              <!-- Corner brackets -->
+              <div class="corner-brackets">
+                <div class="bracket tl"></div>
+                <div class="bracket tr"></div>
+                <div class="bracket bl"></div>
+                <div class="bracket br"></div>
               </div>
               
-              <h1 class="winnerTitle">BINGO!</h1>
-              <p class="winnerName" id="winnerName">Winner: -</p>
-
-              <div class="winner-stats">
-                <div class="stat-pill">
-                  <div class="stat-icon">📞</div>
-                  <div class="stat-content">
-                    <span class="stat-label">Total Calls</span>
-                    <span class="stat-val" id="totalCalls">-</span>
-                  </div>
-                </div>
-                <div class="stat-pill">
-                  <div class="stat-icon">⏱️</div>
-                  <div class="stat-content">
-                    <span class="stat-label">Game Time</span>
-                    <span class="stat-val" id="totalTime">-</span>
-                  </div>
-                </div>
+              <!-- Victory status display -->
+              <div class="status-bar">
+                <span class="status-text">VICTORY_CONFIRMED</span>
+                <span class="status-indicator"></span>
               </div>
+              
+              <!-- Main content -->
+              <div class="winner-content">
+                <div class="hologram-effect">
+                  <h1 class="winnerTitle">BINGO!</h1>
+                  <div class="title-underline"></div>
+                </div>
+                
+                <p class="winnerName" id="winnerName">Winner: -</p>
 
-              <div class="winner-actions">
-                <button class="btn primary winner-btn" onclick="rematch()">
-                  <span class="btn-icon">🔄</span>
-                  <span>REBOOT_SESSION</span>
-                </button>
-                <button class="btn secondary winner-btn" onclick="goHome()">
-                  <span class="btn-icon">🏠</span>
-                  <span>RETURN_HOME</span>
-                </button>
+                <!-- Tech stats display -->
+                <div class="winner-stats">
+                  <div class="stat-card">
+                    <div class="stat-header">
+                      <span class="stat-icon">📡</span>
+                      <span class="stat-label">TOTAL_CALLS</span>
+                    </div>
+                    <div class="stat-value" id="totalCalls">-</div>
+                    <div class="stat-bar"></div>
+                  </div>
+                  <div class="stat-card">
+                    <div class="stat-header">
+                      <span class="stat-icon">⚡</span>
+                      <span class="stat-label">GAME_TIME</span>
+                    </div>
+                    <div class="stat-value" id="totalTime">-</div>
+                    <div class="stat-bar"></div>
+                  </div>
+                </div>
+
+                <!-- Action buttons -->
+                <div class="winner-actions">
+                  <button class="btn cyber-btn primary" onclick="rematch()">
+                    <span class="btn-bg"></span>
+                    <span class="btn-content">
+                      <span class="btn-icon">↻</span>
+                      <span>REBOOT_SESSION</span>
+                    </span>
+                  </button>
+                  <button class="btn cyber-btn secondary" onclick="goHome()">
+                    <span class="btn-bg"></span>
+                    <span class="btn-content">
+                      <span class="btn-icon">◄</span>
+                      <span>RETURN_HOME</span>
+                    </span>
+                  </button>
+                </div>
               </div>
             </div>
           </section>
