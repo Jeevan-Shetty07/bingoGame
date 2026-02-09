@@ -146,6 +146,16 @@ function toggleChatDrawer() {
       mobileToggle.classList.remove("hide-btn");
     }
   }
+}
+
+// FIX: Force layout recalculation on resize/zoom to prevent ghost chat
+window.addEventListener("resize", () => {
+  const activeScreen = document.querySelector(".screen.active");
+  if (activeScreen && activeScreen.id === "game") {
+    // Re-run the show logic for Game view to ensure sidebar is correct
+    show("game");
+  }
+});
   
   if (chatOpen) {
     unreadCount = 0;
