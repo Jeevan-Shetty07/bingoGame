@@ -140,6 +140,7 @@ body {
 }
 
 
+/* refined desktop chat layout */
 .side-view {
   width: 380px;
   display: flex !important; /* Force flex */
@@ -151,6 +152,7 @@ body {
   border-radius: 12px;
   backdrop-filter: blur(20px);
   overflow: hidden; /* Contain children */
+  position: relative; /* Ensure it stays put */
 }
 
 /* Logic to hide chat on landing/create/join pages */
@@ -1043,14 +1045,14 @@ body {
 
 
 /* chat box on the side view */
+/* chat box on the side view */
 .chatCard {
   display: flex !important;
   flex-direction: column;
   padding: 0;
   height: 100%;
-  max-height: calc(100vh - 120px);
-  overflow: hidden;
-  background: rgba(0, 0, 0, 0.4);
+  border: none;
+  background: transparent;
 }
 
 .chatHeader {
