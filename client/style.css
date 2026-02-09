@@ -153,6 +153,28 @@ body {
   overflow: hidden; /* Contain children */
 }
 
+/* Logic to hide chat on landing/create/join pages */
+/* effectively: if #home, #create, or #join is active, hide side-view */
+/* We can use the sibling selector or :has if supported, but let's stick to simple sibling for now if structure permits */
+/* Structure: .main-view > section.active */
+/* .side-view is sibling to .main-view */
+
+/* Since side-view is a sibling of main-view, we can't easily detect which child of main-view is active via CSS alone 
+   UNLESS we add a class to the body or app container. 
+   BUT, we can use the :has() pseudo-class which is widely supported now. */
+
+#app:has(#home.active) .side-view,
+#app:has(#create.active) .side-view,
+#app:has(#join.active) .side-view {
+  display: none !important;
+}
+
+#app:has(#home.active) .chat-drawer-btn,
+#app:has(#create.active) .chat-drawer-btn,
+#app:has(#join.active) .chat-drawer-btn {
+  display: none !important;
+}
+
 /* Ensure chat card inside side-view takes full space */
 .side-view .chatCard {
   flex: 1;
