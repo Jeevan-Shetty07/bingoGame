@@ -1442,40 +1442,51 @@ body {
     max-height: 100%;
     border-radius: 0;
     border-left: 1px solid var(--border);
-    background: rgba(13, 17, 28, 0.95);
+    background: rgba(13, 17, 28, 0.98); /* Slightly more opaque */
     backdrop-filter: blur(20px);
-  }
-
-  .chatBody {
     display: flex !important;
     flex-direction: column;
-    height: 100%;
-    overflow: hidden;
-    position: relative;
   }
 
+  /* Chat body takes remaining space */
+  .chatBody {
+    flex: 1;
+    display: flex !important;
+    flex-direction: column;
+    overflow: hidden; /* Contain inner scroll */
+    position: relative;
+    height: 100%;
+  }
+
+  /* Messages area scrolls */
   .chatMessages {
     flex: 1;
-    padding-bottom: 20px;
-    overflow-y: auto;
+    overflow-y: scroll; /* Always show scrollbar track to prevent jump */
     overflow-x: hidden;
-    height: 100%;
-    /* Create a fade effect at the top so messages don't just clipping harshly */
-    mask-image: linear-gradient(to bottom, transparent, black 20px);
-    -webkit-mask-image: linear-gradient(to bottom, transparent, black 20px);
+    padding: 20px 16px; /* Added side padding */
+    padding-bottom: 80px; /* Extra space so last message clears input */
+    scroll-behavior: smooth;
+    
+    /* Custom scrollbar for mobile webkit */
+    -webkit-overflow-scrolling: touch;
   }
 
-  /* Ensure input area is always visible above keyboard */
+  /* Ensure input area is fixed at bottom */
   .chatInputRow {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
     flex-shrink: 0;
-    padding: 10px 16px;
+    padding: 12px 16px;
     padding-bottom: max(16px, env(safe-area-inset-bottom));
-    background: rgba(13, 17, 28, 0.95);
-    z-index: 20;
+    background: rgba(13, 17, 28, 0.98);
+    border-top: 1px solid var(--border);
+    z-index: 50;
     display: flex;
     align-items: center;
     gap: 8px;
-    position: relative;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.4); /* clearer separation */
   }
 }
 
