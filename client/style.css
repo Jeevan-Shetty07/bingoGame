@@ -183,51 +183,46 @@ body {
   overflow: hidden;
 }
 
-/* Force header visibility with debug/safe styles */
+/* Force header visibility */
 .side-view .chatHeader {
   flex-shrink: 0;
   display: flex !important;
   min-height: 70px;
   height: 70px;
-  background: rgba(255, 0, 0, 0.2) !important; /* DEBUG: RED TINT */
-  border-bottom: 1px solid red !important; /* DEBUG: RED BORDER */
-  z-index: 100 !important; /* Extremely high z-index */
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid var(--border);
+  z-index: 10;
   position: relative;
   align-items: center;
   padding: 0 24px;
-  visibility: visible !important;
-  opacity: 1 !important;
 }
 
 /* Reuse the robust flex structure for desktop too */
 .side-view .chatBody, #chatBody {
-  flex: 1;
+  flex: 1; /* Grows to fill space */
   display: flex !important;
   flex-direction: column;
-  min-height: 0;
-  overflow: hidden; /* container for messages + input */
+  min-height: 0; /* Important for scroll */
+  overflow: hidden; 
   position: relative;
 }
 
 .side-view .chatMessages, #chatMessages {
-  flex: 1;
+  flex: 1; /* Takes full height of body */
   overflow-y: auto;
   padding: 20px;
-  display: block; /* Ensure it's a block */
 }
 
 .side-view .chatInputRow {
   flex-shrink: 0;
-  display: flex !important; /* Force flex */
-  background: rgba(0, 255, 0, 0.2) !important; /* DEBUG: GREEN TINT */
+  display: flex !important; 
+  background: var(--panel);
   padding: 16px;
-  border-top: 1px solid red !important; /* DEBUG: RED BORDER */
-  z-index: 100 !important; /* Extremely high z-index */
-  position: relative;
+  border-top: 1px solid var(--border);
+  z-index: 20;
   min-height: 80px; 
   height: auto;
-  visibility: visible !important;
-  opacity: 1 !important;
+  align-items: center;
 }
 
 
