@@ -689,4 +689,40 @@ if (chatInputEl) {
       }
     }, 300);
   });
+
+
+// --- EMOJI PICKER LOGIC ---
+const emojis = ["😂", "🔥", "👍", "👎", "❤️", "🎉", "💩", "😎", "😭", "😡", "🤔", "🍆", "💀", "👀", "🚀", "🤖", "👻", "🎲"];
+const emojiPicker = document.getElementById("emojiPicker");
+
+if (emojiPicker) {
+  emojis.forEach(emoji => {
+    const span = document.createElement("span");
+    span.className = "emoji-item";
+    span.innerText = emoji;
+    span.onclick = () => addEmoji(emoji);
+    emojiPicker.appendChild(span);
+  });
 }
+
+function toggleEmojiPicker() {
+  if (emojiPicker) {
+    emojiPicker.classList.toggle("hidden");
+  }
+}
+
+function addEmoji(emoji) {
+  if (chatInputEl) {
+    chatInputEl.value += emoji;
+    chatInputEl.focus();
+  }
+}
+
+// Close picker when clicking outside
+document.addEventListener('click', (e) => {
+  if (emojiPicker && !emojiPicker.classList.contains('hidden')) {
+    if (!e.target.closest('.emoji-picker') && !e.target.closest('.emoji-btn')) {
+      emojiPicker.classList.add('hidden');
+    }
+  }
+});

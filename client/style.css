@@ -1428,12 +1428,82 @@ body {
 
   /* Ensure input area is always visible above keyboard */
   .chatInputRow {
-    flex-shrink: 0; /* Never shrink */
+    flex-shrink: 0;
+    padding: 10px 16px;
     padding-bottom: max(16px, env(safe-area-inset-bottom));
     background: rgba(13, 17, 28, 0.95);
-    z-index: 20; /* Ensure above messages */
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
   }
+}
 
+/* Emoji Picker Styles */
+.emoji-picker {
+  position: absolute;
+  bottom: 100%;
+  left: 10px;
+  width: 280px;
+  background: rgba(13, 17, 28, 0.95);
+  border: 1px solid var(--primary);
+  border-radius: 8px;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 5px;
+  box-shadow: 0 0 20px rgba(0, 242, 255, 0.1);
+  backdrop-filter: blur(10px);
+  margin-bottom: 10px;
+  z-index: 30;
+}
+
+.emoji-picker.hidden {
+  display: none;
+}
+
+.emoji-item {
+  cursor: pointer;
+  text-align: center;
+  font-size: 20px;
+  padding: 5px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.emoji-item:hover {
+  background: rgba(0, 242, 255, 0.2);
+}
+
+.emoji-btn {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0 5px;
+  transition: transform 0.2s;
+}
+
+.emoji-btn:hover {
+  transform: scale(1.1);
+}
+
+.send-btn {
+  background: var(--primary);
+  color: #000;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 0 10px var(--primary-glow);
+  transition: all 0.3s ease;
+}
+
+.send-btn:hover {
+  background: #fff;
+  box-shadow: 0 0 20px #fff;
 }
 
 @media (max-width: 600px) {
