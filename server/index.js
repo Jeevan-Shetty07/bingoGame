@@ -212,7 +212,11 @@ io.on("connection", (socket) => {
     io.to(roomId).emit("receiveMessage", {
       name,
       message,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      time: new Date().toLocaleTimeString('en-IN', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        timeZone: 'Asia/Kolkata'
+      })
     });
   });
 });

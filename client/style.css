@@ -676,7 +676,7 @@ body {
 .chatMessages {
   flex: 1;
   padding: 20px;
-  padding-bottom: 40px;
+  padding-bottom: 20px;
   overflow-y: auto;
   overflow-x: hidden;
   display: flex;
@@ -691,12 +691,14 @@ body {
 
 .chatInputRow {
   padding: 16px 20px;
-  background: rgba(0,0,0,0.3);
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(10px);
   display: flex;
   gap: 12px;
   border-top: 1px solid var(--border);
   flex-shrink: 0;
   align-items: center;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.3);
 }
 
 .msg {
