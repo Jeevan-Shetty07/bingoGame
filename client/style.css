@@ -1027,6 +1027,14 @@ body {
     right: 0;
   }
   
+  .side-view {
+    max-height: calc(100vh - 100px);
+  }
+  
+  .chatCard {
+    max-height: calc(100vh - 100px);
+  }
+  
   .main-view {
     max-width: 95%;
     flex: none;
