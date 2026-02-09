@@ -182,9 +182,21 @@
             <div class="winner-overlay">
               <div class="cinematic-text">CHAMPION_DETECTED</div>
             </div>
+            
+            <!-- Floating particles for celebration -->
+            <div class="winner-particles">
+              <div class="particle p1">✨</div>
+              <div class="particle p2">⭐</div>
+              <div class="particle p3">💫</div>
+              <div class="particle p4">✨</div>
+              <div class="particle p5">⭐</div>
+              <div class="particle p6">💫</div>
+            </div>
+            
             <div class="winnerCard">
               <div class="scan-line-overlay"></div>
               <div class="victory-ring"></div>
+              <div class="victory-ring-2"></div>
               <div class="hud-corners">
                 <div class="corner tl"></div><div class="corner tr"></div>
                 <div class="corner bl"></div><div class="corner br"></div>
@@ -192,24 +204,43 @@
               <div class="hud-lines">
                 <div class="line v-left"></div><div class="line v-right"></div>
               </div>
-              <div class="trophy-container">🏆</div>
+              
+              <!-- Enhanced trophy with glow -->
+              <div class="trophy-wrapper">
+                <div class="trophy-glow"></div>
+                <div class="trophy-container">🏆</div>
+              </div>
+              
               <h1 class="winnerTitle">BINGO!</h1>
               <p class="winnerName" id="winnerName">Winner: -</p>
 
               <div class="winner-stats">
                 <div class="stat-pill">
-                  <span class="stat-label">Calls</span>
-                  <span class="stat-val" id="totalCalls">-</span>
+                  <div class="stat-icon">📞</div>
+                  <div class="stat-content">
+                    <span class="stat-label">Total Calls</span>
+                    <span class="stat-val" id="totalCalls">-</span>
+                  </div>
                 </div>
                 <div class="stat-pill">
-                  <span class="stat-label">Time</span>
-                  <span class="stat-val" id="totalTime">-</span>
+                  <div class="stat-icon">⏱️</div>
+                  <div class="stat-content">
+                    <span class="stat-label">Game Time</span>
+                    <span class="stat-val" id="totalTime">-</span>
+                  </div>
                 </div>
               </div>
 
-
-              <button class="btn primary" onclick="rematch()">REBOOT_SESSION</button>
-              <button class="btn secondary" onclick="goHome()">RETURN_HOME</button>
+              <div class="winner-actions">
+                <button class="btn primary winner-btn" onclick="rematch()">
+                  <span class="btn-icon">🔄</span>
+                  <span>REBOOT_SESSION</span>
+                </button>
+                <button class="btn secondary winner-btn" onclick="goHome()">
+                  <span class="btn-icon">🏠</span>
+                  <span>RETURN_HOME</span>
+                </button>
+              </div>
             </div>
           </section>
         </div>
