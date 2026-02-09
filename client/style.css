@@ -729,7 +729,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 12px 20px;
-  background: rgba(0, 242, 255, 0.05);
+  background: transparent;
   border-left: 3px solid var(--primary);
   margin-bottom: 30px;
   font-family: monospace;
@@ -831,7 +831,7 @@ body {
 }
 
 .stat-card {
-  background: rgba(0, 0, 0, 0.4);
+  background: transparent;
   border: 1px solid var(--border);
   border-left: 3px solid var(--primary);
   padding: 20px;
@@ -1008,7 +1008,7 @@ body {
 .chatMessages {
   flex: 1;
   padding: 20px;
-  padding-bottom: 10px;
+  padding-bottom: 5px;
   overflow-y: auto;
   overflow-x: hidden;
   display: flex;
