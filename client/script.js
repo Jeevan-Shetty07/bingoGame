@@ -689,6 +689,7 @@ if (chatInputEl) {
       }
     }, 300);
   });
+}
 
 
 // --- EMOJI PICKER LOGIC ---
