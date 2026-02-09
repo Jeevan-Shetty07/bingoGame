@@ -147,6 +147,12 @@ body {
   height: auto;
 }
 
+/* Hide chat when winner screen is active */
+#winner.active ~ .side-view,
+.content-layout:has(#winner.active) .side-view {
+  display: none !important;
+}
+
 /* all the glass cards look like this - stay glassmorphism */
 .card {
   background: var(--panel);
@@ -636,7 +642,7 @@ body {
 
 /* ========== NEW CYBER WINNER PAGE ========== */
 
-/* Cyber grid background */
+/* Cyber grid background - only visible on winner screen */
 .cyber-grid {
   position: fixed;
   inset: 0;
@@ -644,9 +650,14 @@ body {
     linear-gradient(var(--primary) 1px, transparent 1px),
     linear-gradient(90deg, var(--primary) 1px, transparent 1px);
   background-size: 50px 50px;
-  opacity: 0.1;
-  z-index: 998;
+  opacity: 0;
+  z-index: 1;
   animation: gridPulse 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+#winner.active .cyber-grid {
+  opacity: 0.1;
 }
 
 @keyframes gridPulse {
@@ -654,12 +665,17 @@ body {
   50% { opacity: 0.15; }
 }
 
-/* Data streams */
+/* Data streams - only visible on winner screen */
 .data-streams {
   position: fixed;
   inset: 0;
-  z-index: 999;
+  z-index: 2;
   pointer-events: none;
+  opacity: 0;
+}
+
+#winner.active .data-streams {
+  opacity: 1;
 }
 
 .stream {
@@ -695,7 +711,7 @@ body {
   box-shadow: 
     0 0 60px var(--primary-glow),
     inset 0 0 60px rgba(0, 242, 255, 0.03);
-  z-index: 1000;
+  z-index: 10;
 }
 
 /* Animated border lines */
@@ -1045,7 +1061,7 @@ body {
 .chatMessages {
   flex: 1;
   padding: 20px;
-  padding-bottom: 20px;
+  padding-bottom: 10px;
   overflow-y: auto;
   overflow-x: hidden;
   display: flex;
