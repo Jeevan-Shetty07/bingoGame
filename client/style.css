@@ -183,18 +183,20 @@ body {
   overflow: hidden;
 }
 
-/* Force header visibility */
+/* Force header visibility with debug/safe styles */
 .side-view .chatHeader {
   flex-shrink: 0;
   display: flex !important;
   min-height: 70px;
   height: 70px;
-  background: rgba(255, 255, 255, 0.03);
-  border-bottom: 1px solid var(--border);
-  z-index: 50; /* Super high z-index */
+  background: rgba(255, 0, 0, 0.2) !important; /* DEBUG: RED TINT */
+  border-bottom: 1px solid red !important; /* DEBUG: RED BORDER */
+  z-index: 100 !important; /* Extremely high z-index */
   position: relative;
   align-items: center;
   padding: 0 24px;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 /* Reuse the robust flex structure for desktop too */
@@ -217,13 +219,15 @@ body {
 .side-view .chatInputRow {
   flex-shrink: 0;
   display: flex !important; /* Force flex */
-  background: var(--panel);
+  background: rgba(0, 255, 0, 0.2) !important; /* DEBUG: GREEN TINT */
   padding: 16px;
-  border-top: 1px solid var(--border);
-  z-index: 50; /* Super high z-index */
+  border-top: 1px solid red !important; /* DEBUG: RED BORDER */
+  z-index: 100 !important; /* Extremely high z-index */
   position: relative;
   min-height: 80px; 
   height: auto;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 
