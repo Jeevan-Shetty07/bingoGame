@@ -699,13 +699,16 @@ body {
 }
 
 /* Winner card - no card, just content on background */
+/* Winner card - no card, just content on background */
 .winnerCard {
   position: relative;
   max-width: 700px;
-  margin: 0 auto;
-  padding: 50px 40px;
-  background: transparent;
-  border: none;
+  margin: 40px auto 0;
+  padding: 20px;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
   z-index: 10;
 }
 
@@ -1008,7 +1011,8 @@ body {
 .chatMessages {
   flex: 1;
   padding: 20px;
-  padding-bottom: 5px;
+  padding-top: 10px; /* Add space at top */
+  padding-bottom: 20px; /* Ensure space at bottom */
   overflow-y: auto;
   overflow-x: hidden;
   display: flex;
@@ -1018,7 +1022,6 @@ body {
   scrollbar-width: thin;
   scrollbar-color: var(--primary) rgba(0,0,0,0.2);
   min-height: 0;
-  max-height: 100%;
 }
 
 .chatInputRow {
@@ -1360,16 +1363,24 @@ body {
     gap: 12px;
   }
   
+  /* Fixed positioning for mobile chat drawer */
+  .side-view {
+    position: fixed;
+    right: -100%;
+    top: 0;
+    bottom: 0;
+    height: 100dvh;
+    max-height: 100dvh;
+    width: 85%;
+    max-width: 380px;
+    z-index: 100;
+    background: transparent;
+    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
   .side-view.open {
     right: 0;
-  }
-  
-  .side-view {
-    max-height: calc(100vh - 100px);
-  }
-  
-  .chatCard {
-    max-height: calc(100vh - 100px);
+    box-shadow: -10px 0 30px rgba(0,0,0,0.5);
   }
   
   .main-view {
@@ -1380,16 +1391,34 @@ body {
   .chat-drawer-btn {
     display: flex;
   }
-
+  
   .chatCard {
     height: 100%;
+    max-height: 100%;
     border-radius: 0;
     border-left: 1px solid var(--border);
+    background: rgba(13, 17, 28, 0.95);
+    backdrop-filter: blur(20px);
   }
 
   .chatBody {
     display: flex !important;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
   }
+
+  .chatMessages {
+    flex: 1;
+    padding-bottom: 20px;
+  }
+
+  /* Ensure input area is always visible above keyboard */
+  .chatInputRow {
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+    background: rgba(13, 17, 28, 0.95);
+  }
+
 }
 
 @media (max-width: 600px) {
