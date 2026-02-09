@@ -810,14 +810,18 @@ body {
 
 .winnerName {
   text-align: center;
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--text);
-  text-transform: uppercase;
-  letter-spacing: 3px;
+  font-size: 42px;
+  font-weight: 800;
+  color: #fff;
   margin-bottom: 40px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-shadow: 
+    0 0 10px var(--primary),
+    0 0 20px var(--primary),
+    0 0 40px var(--primary);
   opacity: 0;
-  animation: fadeInUp 0.6s 1s forwards;
+  animation: fadeInUp 0.8s 0.3s forwards;
 }
 
 @keyframes fadeInUp {
@@ -993,6 +997,8 @@ body {
   align-items: center;
   cursor: pointer;
   flex-shrink: 0;
+  z-index: 20;
+  position: relative;
 }
 
 @media (min-width: 901px) {
@@ -1406,17 +1412,26 @@ body {
     flex-direction: column;
     height: 100%;
     overflow: hidden;
+    position: relative;
   }
 
   .chatMessages {
     flex: 1;
     padding-bottom: 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100%;
+    /* Create a fade effect at the top so messages don't just clipping harshly */
+    mask-image: linear-gradient(to bottom, transparent, black 20px);
+    -webkit-mask-image: linear-gradient(to bottom, transparent, black 20px);
   }
 
   /* Ensure input area is always visible above keyboard */
   .chatInputRow {
+    flex-shrink: 0; /* Never shrink */
     padding-bottom: max(16px, env(safe-area-inset-bottom));
     background: rgba(13, 17, 28, 0.95);
+    z-index: 20; /* Ensure above messages */
   }
 
 }
