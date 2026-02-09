@@ -132,8 +132,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  overflow-y: auto;
-  padding: 8px; /* Further reduced */
+  padding: 8px;
   transition: all 0.3s ease;
 }
 
@@ -141,7 +140,8 @@ body {
   width: 380px;
   display: none;
   flex-direction: column;
-  height: 100%;
+  max-height: calc(100vh - 120px);
+  height: auto;
 }
 
 /* all the glass cards look like this - stay glassmorphism */
@@ -641,7 +641,8 @@ body {
   display: flex !important;
   flex-direction: column;
   padding: 0;
-  flex: 1;
+  height: 100%;
+  max-height: calc(100vh - 120px);
   overflow: hidden;
   background: rgba(0, 0, 0, 0.4);
 }
@@ -672,7 +673,7 @@ body {
 .chatMessages {
   flex: 1;
   padding: 20px;
-  padding-bottom: 40px; /* Comfort padding */
+  padding-bottom: 40px;
   overflow-y: auto;
   overflow-x: hidden;
   display: flex;
@@ -681,6 +682,8 @@ body {
   scroll-behavior: smooth;
   scrollbar-width: thin;
   scrollbar-color: var(--primary) rgba(0,0,0,0.2);
+  min-height: 0;
+  max-height: 100%;
 }
 
 .chatInputRow {
