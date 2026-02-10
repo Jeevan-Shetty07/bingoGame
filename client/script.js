@@ -49,6 +49,7 @@ let doneSentForThisCall = false;
 
 let remainingPlayers = 0;
 let pendingNames = [];
+let lastCompletedLines = 0;
 
 // clock sync shift to keep evryone on the same page
 let serverTimeOffset = 0; 
@@ -244,10 +245,34 @@ function startGame() {
   socket.emit("startGame", currentRoomId);
 }
 
+function showModal(title, message, onConfirm) {
+  const modal = document.getElementById("customModal");
+  const titleEl = document.getElementById("modalTitle");
+  const messageEl = document.getElementById("modalMessage");
+  const confirmBtn = document.getElementById("modalConfirm");
+  const cancelBtn = document.getElementById("modalCancel");
+
+  titleEl.innerText = title;
+  messageEl.innerText = message;
+  modal.classList.remove("hidden");
+
+  const cleanup = () => {
+    modal.classList.add("hidden");
+    confirmBtn.onclick = null;
+    cancelBtn.onclick = null;
+  };
+
+  confirmBtn.onclick = () => {
+    onConfirm();
+    cleanup();
+  };
+  cancelBtn.onclick = cleanup;
+}
+
 function kickPlayer(playerId) {
-  if (confirm("Are you sure you want to kick this player?")) {
+  showModal("Kick Player", "Are you sure you want to remove this player from the network?", () => {
     socket.emit("kickPlayer", { roomId: currentRoomId, targetId: playerId });
-  }
+  });
 }
 
 /******** socket listeneres ********/
@@ -290,6 +315,7 @@ socket.on("gameStarted", ({ board, boardSize }) => {
   pendingNames = [];
 
   gameStartTime = Date.now();
+  lastCompletedLines = 0;
   renderBoard(boardSize);
   updateBingoButton();
   show("game");
@@ -620,8 +646,32 @@ function maskIfMissed(number) {
 /******** BINGO ********/
 function updateBingoButton() {
   const completedLines = countBingoLines(marked);
+  
+  // Check if a new line was completed
+  if (completedLines > lastCompletedLines) {
+    triggerLineEffect();
+    lastCompletedLines = completedLines;
+  }
+
   updateProgressUI(completedLines);
   bingoBtn.disabled = completedLines < 5 || gameOver;
+}
+
+function triggerLineEffect() {
+  // Confetti for line completion
+  confetti({
+    particleCount: 50,
+    spread: 50,
+    origin: { y: 0.8 },
+    colors: ['#00f2ff', '#7000ff']
+  });
+
+  // Visual flash on screen
+  const app = document.getElementById("app");
+  app.style.boxShadow = "inset 0 0 50px var(--primary-glow)";
+  setTimeout(() => {
+    app.style.boxShadow = "none";
+  }, 500);
 }
 
 function countBingoLines(m) {
