@@ -146,7 +146,7 @@ body {
   width: 380px;
   display: flex !important;
   flex-direction: column;
-  height: 95%; /* Take most of parent's height */
+  height: 90%; /* Take most of parent's height */
   flex-shrink: 0;
   background: var(--panel);
   border: 1px solid var(--border);
@@ -154,8 +154,7 @@ body {
   backdrop-filter: blur(20px);
   overflow: hidden;
   position: relative;
-  align-self: flex-start; /* Fix for cutting from top/bottom */
-  margin-top: 10px;
+  align-self: center; /* Center vertically » */
 }
 
 /* Logic to hide chat on landing/create/join pages */
@@ -1797,68 +1796,261 @@ body {
   margin-top: auto;
   font-weight: 800;
   text-transform: uppercase;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
+  }
+}
+
+/* Emoji Picker Styles */
+.emoji-picker {
+  position: absolute;
+  bottom: 100%;
+  left: 10px;
+  width: 280px;
+  background: rgba(13, 17, 28, 0.95);
+  border: 1px solid var(--primary);
+  border-radius: 8px;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 5px;
+  box-shadow: 0 0 20px rgba(0, 242, 255, 0.1);
+  backdrop-filter: blur(10px);
+  margin-bottom: 10px;
+  z-index: 30;
+}
+
+.emoji-picker.hidden {
+  display: none;
+}
+
+.emoji-item {
+  cursor: pointer;
+  text-align: center;
+  font-size: 20px;
+  padding: 5px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.emoji-item:hover {
+  background: rgba(0, 242, 255, 0.2);
+}
+
+.emoji-btn {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0 5px;
+  transition: transform 0.2s;
+}
+
+.emoji-btn:hover {
+  transform: scale(1.1);
+}
+
+.send-btn {
+  background: var(--primary);
+  color: #000;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 0 10px var(--primary-glow);
+  transition: all 0.3s ease;
+}
+
+.send-btn:hover {
+  background: #fff;
+  box-shadow: 0 0 20px #fff;
+}
+
+@media (max-width: 600px) {
+  .brandTitle { font-size: 20px; letter-spacing: 2px; }
+  .logo { font-size: 28px; }
+  .gameTop { grid-template-columns: 1fr; gap: 8px; }
+  .calledBox { height: 60px; }
+  .calledNum { font-size: 28px; }
+  .cell { font-size: 14px; }
+  
+  /* New winner page mobile optimizations */
+  .winnerCard {
+    padding: 30px 20px;
+  }
+  
+  .winnerTitle {
+    font-size: 48px;
+    letter-spacing: 6px;
+  }
+  
+  .winnerName {
+    font-size: 18px;
+    letter-spacing: 2px;
+  }
+  
+  .winner-stats {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .stat-card {
+    padding: 16px;
+  }
+  
+  .stat-value {
+    font-size: 28px;
+  }
+  
+  .cyber-btn {
+    width: 100%;
+    padding: 14px 24px;
+    font-size: 12px;
+  }
+  
+  .bracket {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .status-bar {
+    padding: 10px 16px;
+  }
+  
+  .status-text {
+    font-size: 10px;
+  }
+  
+  /* Card and input adjustments */
+  .card {
+    padding: 16px;
+  }
+  .input {
+    padding: 12px;
+    font-size: 14px;
+  }
+  .btn {
+    padding: 14px;
+    font-size: 13px;
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 601px) and (max-width: 900px) {
+  .winnerTitle {
+    font-size: 64px;
+  }
+  .trophy-container {
+    font-size: 70px;
+  }
+  .stat-pill {
+    min-width: 160px;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 400px) {
+  #app {
+    padding: 8px;
+  }
+  .brandTitle {
+    font-size: 18px;
+    letter-spacing: 1px;
+  }
+  .brandSub {
+    font-size: 10px;
+  }
+  .winnerTitle {
+    font-size: 36px;
+    letter-spacing: 2px;
+  }
+  .trophy-container {
+    font-size: 50px;
+  }
+  .particle {
+    font-size: 18px;
+  }
+}
+
+
+
+/* signature at the bottom - themed to match the cyber-glass look */
+.signature {
+  text-align: center;
+  padding: 40px 10px 20px;
+  background: var(--cyber-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-family: 'Outfit', sans-serif; /* matches the rest of the app */
+  font-size: 14px;
+  letter-spacing: 3px;
+  opacity: 0.8;
+  margin-top: auto;
+  font-weight: 800;
+  text-transform: uppercase;
   filter: drop-shadow(0 0 8px var(--primary-glow));
 }
 
 
 
- / *   C u s t o m   M o d a l   S t y l e s   * / 
- . m o d a l - o v e r l a y   { 
-     p o s i t i o n :   f i x e d ; 
-     t o p :   0 ; 
-     l e f t :   0 ; 
-     w i d t h :   1 0 0 % ; 
-     h e i g h t :   1 0 0 v h ; 
-     b a c k g r o u n d :   r g b a ( 0 ,   0 ,   0 ,   0 . 7 5 ) ; 
-     b a c k d r o p - f i l t e r :   b l u r ( 1 2 p x ) ; 
-     d i s p l a y :   f l e x ; 
-     j u s t i f y - c o n t e n t :   c e n t e r ; 
-     a l i g n - i t e m s :   c e n t e r ; 
-     z - i n d e x :   9 9 9 9 ; 
-     t r a n s i t i o n :   a l l   0 . 3 s   e a s e ; 
- } 
- 
- . m o d a l - o v e r l a y . h i d d e n   { 
-     o p a c i t y :   0 ; 
-     v i s i b i l i t y :   h i d d e n ; 
-     p o i n t e r - e v e n t s :   n o n e ; 
- } 
- 
- . m o d a l - c a r d   { 
-     w i d t h :   9 0 % ; 
-     m a x - w i d t h :   4 0 0 p x ; 
-     p a d d i n g :   3 2 p x ; 
-     t e x t - a l i g n :   c e n t e r ; 
-     b o r d e r :   1 p x   s o l i d   v a r ( - - b o r d e r ) ; 
-     b o x - s h a d o w :   0   2 0 p x   5 0 p x   r g b a ( 0 , 0 , 0 , 0 . 6 ) ; 
-     t r a n s f o r m :   t r a n s l a t e Y ( 0 ) ; 
-     t r a n s i t i o n :   t r a n s f o r m   0 . 3 s   e a s e ; 
- } 
- 
- . m o d a l - o v e r l a y . h i d d e n   . m o d a l - c a r d   { 
-     t r a n s f o r m :   t r a n s l a t e Y ( 2 0 p x ) ; 
- } 
- 
- . m o d a l - c a r d   h 3   { 
-     f o n t - s i z e :   2 0 p x ; 
-     c o l o r :   v a r ( - - p r i m a r y ) ; 
-     m a r g i n - b o t t o m :   1 2 p x ; 
-     t e x t - t r a n s f o r m :   u p p e r c a s e ; 
-     l e t t e r - s p a c i n g :   2 p x ; 
- } 
- 
- . m o d a l - c a r d   p   { 
-     c o l o r :   v a r ( - - t e x t - d i m ) ; 
-     m a r g i n - b o t t o m :   2 4 p x ; 
- } 
- 
- . m o d a l - a c t i o n s   { 
-     d i s p l a y :   f l e x ; 
-     g a p :   1 2 p x ; 
- } 
- 
- . m o d a l - a c t i o n s   . b t n   { 
-     m a r g i n - t o p :   0 ; 
- } 
-  
- 
+/* Custom Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(12px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  transition: all 0.3s ease;
+}
+
+.modal-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.modal-card {
+  width: 90%;
+  max-width: 400px;
+  padding: 32px;
+  text-align: center;
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+  transform: translateY(0);
+  transition: transform 0.3s ease;
+}
+
+.modal-overlay.hidden .modal-card {
+  transform: translateY(20px);
+}
+
+.modal-card h3 {
+  font-size: 20px;
+  color: var(--primary);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.modal-card p {
+  color: var(--text-dim);
+  margin-bottom: 24px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.modal-actions .btn {
+  margin-top: 0;
+}
