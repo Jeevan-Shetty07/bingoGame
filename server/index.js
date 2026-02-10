@@ -147,6 +147,18 @@ io.on("connection", (socket) => {
     }, 10_000);
   });
 
+  socket.on("kickPlayer", ({ roomId, targetId }) => {
+    const room = rooms[roomId];
+    if (!room || room.hostId !== socket.id || targetId === socket.id) return;
+
+    const ok = kickPlayer(roomId, targetId);
+    if (ok) {
+      io.to(targetId).emit("kicked");
+      io.to(roomId).emit("roomUpdated", room);
+      console.log(`Player ${targetId} was kicked from room ${roomId}`);
+    }
+  });
+
   // when players finish markin their board
   socket.on("markDone", ({ roomId }) => {
     const room = rooms[roomId];

@@ -244,6 +244,12 @@ function startGame() {
   socket.emit("startGame", currentRoomId);
 }
 
+function kickPlayer(playerId) {
+  if (confirm("Are you sure you want to kick this player?")) {
+    socket.emit("kickPlayer", { roomId: currentRoomId, targetId: playerId });
+  }
+}
+
 /******** socket listeneres ********/
 socket.on("serverTime", (serverMs) => {
   // calculate how much our clock is off from the server
@@ -254,6 +260,12 @@ socket.on("serverTime", (serverMs) => {
 socket.on("roomJoined", (room) => {
   currentRoomId = room.id;
   updateLobby(room);
+});
+
+socket.on("kicked", () => {
+  alert("🚫 You have been kicked from the room by the host.");
+  currentRoomId = null;
+  goHome();
 });
 
 socket.on("roomUpdated", (room) => {
@@ -411,8 +423,15 @@ function updateLobby(room) {
 
   playersList.innerHTML = "";
   players.forEach((p, i) => {
+    const isHost = room.hostId === socket.id;
+    const isMe = p.id === socket.id;
+
     const li = document.createElement("li");
-    li.innerText = p.name;
+    li.className = "player-item";
+    li.innerHTML = `
+      <span>${p.name} ${isMe ? "(You)" : ""}</span>
+      ${isHost && !isMe ? `<button class="kick-btn" onclick="kickPlayer('${p.id}')">KICK</button>` : ""}
+    `;
     li.id = "p" + i;
     playersList.appendChild(li);
   });

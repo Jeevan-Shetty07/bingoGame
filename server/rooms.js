@@ -64,6 +64,19 @@ function joinRoom(roomId, socketId, name) {
   return room;
 }
 
+function kickPlayer(roomId, playerId) {
+  const room = rooms[roomId];
+  if (!room) return false;
+
+  const playerIndex = room.players.findIndex(p => p.id === playerId);
+  if (playerIndex === -1) return false;
+
+  room.players.splice(playerIndex, 1);
+  if (room.responded) delete room.responded[playerId];
+
+  return true;
+}
+
 function startGame(room) {
   room.players.forEach((p) => {
     p.board = generateBoard(room.boardSize);
@@ -138,4 +151,5 @@ module.exports = {
   markDone,
   remainingCount,
   allDone,
+  kickPlayer,
 };
