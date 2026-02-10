@@ -14,6 +14,8 @@ const {
   markDone,
   remainingCount,
   allDone,
+  kickPlayer,
+  handleDisconnect,
 } = require("./rooms");
 
 const { isBingo } = require("./bingoLogic");
@@ -22,6 +24,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 const turnTimeouts = {}; // keepin track of idle players 
+const socketRoomMap = {}; // socketId -> roomId for quick lookup
 
 app.use(express.static("client"));
 
@@ -91,6 +94,7 @@ io.on("connection", (socket) => {
   socket.on("createRoom", ({ name, boardSize }) => {
     const roomId = createRoom(socket.id, name, boardSize);
     socket.join(roomId);
+    socketRoomMap[socket.id] = roomId;
     socket.emit("roomJoined", rooms[roomId]);
   });
 
@@ -99,6 +103,7 @@ io.on("connection", (socket) => {
     if (!room) return socket.emit("errorMsg", "Room invalid");
 
     socket.join(roomId);
+    socketRoomMap[socket.id] = roomId;
     io.to(roomId).emit("roomUpdated", room);
   });
 
@@ -153,6 +158,7 @@ io.on("connection", (socket) => {
 
     const ok = kickPlayer(roomId, targetId);
     if (ok) {
+      delete socketRoomMap[targetId];
       io.to(targetId).emit("kicked");
       io.to(roomId).emit("roomUpdated", room);
       console.log(`Player ${targetId} was kicked from room ${roomId}`);
@@ -230,6 +236,38 @@ io.on("connection", (socket) => {
         timeZone: 'Asia/Kolkata'
       })
     });
+  });
+
+  socket.on("disconnect", () => {
+    console.log(`node disconnected: ${socket.id}`);
+    const roomId = socketRoomMap[socket.id];
+    delete socketRoomMap[socket.id];
+
+    if (roomId) {
+      const room = rooms[roomId];
+      if (room) {
+        handleDisconnect(socket.id);
+        
+        // if the game is on, we might need to skip turn if it was their turn
+        if (room.gameStarted && !room.winner) {
+          if (room.players.length > 0) {
+             // currentTurnIndex might be out of bounds now or pointing to wrong person
+             room.currentTurnIndex %= room.players.length;
+             
+             // if room was locked on a call, check if every1 else is done
+             if (room.turnLocked && allDone(room)) {
+               unlockAndNext(roomId);
+             } else {
+               emitTurn(roomId);
+               emitCall(roomId);
+             }
+          }
+        } else {
+          // just lobby update
+          io.to(roomId).emit("roomUpdated", room);
+        }
+      }
+    }
   });
 });
 

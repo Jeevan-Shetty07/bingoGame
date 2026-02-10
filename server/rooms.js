@@ -74,7 +74,41 @@ function kickPlayer(roomId, playerId) {
   room.players.splice(playerIndex, 1);
   if (room.responded) delete room.responded[playerId];
 
+  // If host kicked themselves (shouldn't happen with UI), assign new host
+  if (room.hostId === playerId && room.players.length > 0) {
+    room.hostId = room.players[0].id;
+  }
+
   return true;
+}
+
+function handleDisconnect(socketId) {
+  let affectedRoomId = null;
+
+  for (const roomId in rooms) {
+    const room = rooms[roomId];
+    const index = room.players.findIndex((p) => p.id === socketId);
+
+    if (index !== -1) {
+      room.players.splice(index, 1);
+      if (room.responded) delete room.responded[socketId];
+      affectedRoomId = roomId;
+
+      // assign a new host if the host left
+      if (room.hostId === socketId && room.players.length > 0) {
+        room.hostId = room.players[0].id;
+      }
+
+      // Nuke the room if everyone left
+      if (room.players.length === 0) {
+        delete rooms[roomId];
+        affectedRoomId = null; // don't need update if room is gone
+      }
+      break;
+    }
+  }
+
+  return affectedRoomId;
 }
 
 function startGame(room) {
@@ -152,4 +186,5 @@ module.exports = {
   remainingCount,
   allDone,
   kickPlayer,
+  handleDisconnect,
 };
