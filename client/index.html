@@ -150,6 +150,12 @@
                   <span class="timerLabel">⏱ Time Left</span>
                   <span class="timerValue"><span id="timeLeft">0</span>s</span>
                 </div>
+
+                <div class="visionBox">
+                  <button id="visionBtn" class="vision-btn" onclick="toggleVision()" title="Toggle Vision Mode">
+                    👁️ VISION
+                  </button>
+                </div>
               </div>
 
               <div class="gameBottom">
@@ -276,6 +282,12 @@
             <div class="chatInputRow">
               <div id="emojiPicker" class="emoji-picker hidden">
                 <!-- Emojis will be injected here via JS -->
+              </div>
+              <div class="quick-reactions">
+                <button onclick="sendEmoji('🔥')">🔥</button>
+                <button onclick="sendEmoji('😂')">😂</button>
+                <button onclick="sendEmoji('😮')">😮</button>
+                <button onclick="sendEmoji('💀')">💀</button>
               </div>
               <button class="emoji-btn" onclick="toggleEmojiPicker()">😊</button>
               <input id="chatInput" placeholder="Write a message..." onkeyup="checkChatEnter(event)" />

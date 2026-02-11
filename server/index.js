@@ -238,6 +238,12 @@ io.on("connection", (socket) => {
     });
   });
 
+  // emoji reactions for fun
+  socket.on("sendEmoji", ({ roomId, emoji, name }) => {
+    if (!roomId || !emoji) return;
+    io.to(roomId).emit("receiveEmoji", { emoji, name, socketId: socket.id });
+  });
+
   socket.on("disconnect", () => {
     console.log(`node disconnected: ${socket.id}`);
     const roomId = socketRoomMap[socket.id];

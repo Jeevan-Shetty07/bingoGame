@@ -50,6 +50,7 @@ let doneSentForThisCall = false;
 let remainingPlayers = 0;
 let pendingNames = [];
 let lastCompletedLines = 0;
+let visionEnabled = false;
 
 // clock sync shift to keep evryone on the same page
 let serverTimeOffset = 0; 
@@ -342,6 +343,43 @@ socket.on(
   },
 );
 
+socket.on("receiveEmoji", ({ emoji, name, socketId }) => {
+  createEmojiBurst(emoji);
+  showToast(`${name}: ${emoji}`);
+});
+
+function createEmojiBurst(emoji) {
+  const burst = document.createElement("div");
+  burst.className = "emoji-burst";
+  burst.innerText = emoji;
+  
+  // random horizontal position
+  const x = Math.random() * (window.innerWidth - 50);
+  burst.style.left = `${x}px`;
+  burst.style.bottom = "20px";
+  
+  document.body.appendChild(burst);
+  
+  // cleanup after animation
+  setTimeout(() => burst.remove(), 2000);
+}
+
+function sendEmoji(emoji) {
+  if (!currentRoomId) return;
+  socket.emit("sendEmoji", {
+    roomId: currentRoomId,
+    emoji: emoji,
+    name: myName || "User"
+  });
+}
+
+function toggleVision() {
+  visionEnabled = !visionEnabled;
+  const btn = document.getElementById("visionBtn");
+  if (btn) btn.classList.toggle("active", visionEnabled);
+  updateBoardUI();
+}
+
 socket.on(
   "calledNumbersUpdate",
   ({ calledNumbers: nums, currentCall: call, remaining, pendingNames: pn }) => {
@@ -492,7 +530,17 @@ function setTurnUI() {
 
   players.forEach((_, i) => {
     const li = document.getElementById("p" + i);
-    if (li) li.classList.toggle("active-turn", i === currentTurnIndex);
+    if (li) {
+      const isActive = i === currentTurnIndex;
+      li.classList.toggle("active-turn", isActive);
+      
+      if (isActive) {
+        // pop the active player with GSAP
+        gsap.to(li, { scale: 1.1, duration: 0.3, ease: "back.out(2)" });
+      } else {
+        gsap.to(li, { scale: 1, duration: 0.3 });
+      }
+    }
   });
 }
 
@@ -584,6 +632,10 @@ function updateBoardUI() {
 
     const canCall = isMyTurn() && !turnLocked && !calledNumbers.includes(n);
     c.classList.toggle("callable", canCall);
+    
+    // Vision Highlight: uncalled numbers on my board
+    const isUncalled = !calledNumbers.includes(n) && !maskedNumbers.has(n);
+    c.classList.toggle("vision-highlight", visionEnabled && isUncalled);
   });
 }
 
@@ -611,9 +663,15 @@ function startTimer() {
       if (t <= 3) {
         timerLabelEl.style.color = "#ef4444";
         timerLabelEl.style.textShadow = "0 0 12px rgba(239,68,68,0.7)";
+        timerLabelEl.parentElement.classList.add("hurry");
+        
+        // rhythmic pulse with GSAP
+        gsap.to(timerLabelEl, { scale: 1.3, duration: 0.2, yoyo: true, repeat: 1 });
       } else {
         timerLabelEl.style.color = "white";
         timerLabelEl.style.textShadow = "none";
+        timerLabelEl.parentElement.classList.remove("hurry");
+        gsap.set(timerLabelEl, { scale: 1 });
       }
     }
 
