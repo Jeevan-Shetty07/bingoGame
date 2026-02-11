@@ -173,7 +173,15 @@
                 </button>
               </div>
 
-              <div id="board" class="board"></div>
+              <div class="game-main">
+                <div id="board" class="board"></div>
+                <div class="quick-reactions vertical">
+                  <button onclick="sendEmoji('🔥')" title="Fire">🔥</button>
+                  <button onclick="sendEmoji('😂')" title="Laugh">😂</button>
+                  <button onclick="sendEmoji('😮')" title="Wow">😮</button>
+                  <button onclick="sendEmoji('💀')" title="Dead">💀</button>
+                </div>
+              </div>
             </div>
           </section>
 
@@ -276,12 +284,6 @@
             <div class="chatInputRow">
               <div id="emojiPicker" class="emoji-picker hidden">
                 <!-- Emojis will be injected here via JS -->
-              </div>
-              <div class="quick-reactions">
-                <button onclick="sendEmoji('🔥')">🔥</button>
-                <button onclick="sendEmoji('😂')">😂</button>
-                <button onclick="sendEmoji('😮')">😮</button>
-                <button onclick="sendEmoji('💀')">💀</button>
               </div>
               <button class="emoji-btn" onclick="toggleEmojiPicker()">😊</button>
               <input id="chatInput" placeholder="Write a message..." onkeyup="checkChatEnter(event)" />
