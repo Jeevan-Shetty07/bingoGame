@@ -280,6 +280,15 @@ socket.on("serverTime", (serverMs) => {
   // calculate how much our clock is off from the server
   serverTimeOffset = serverMs - Date.now();
   console.log(`sync'd with server! offset: ${serverTimeOffset}ms`);
+
+  // hide the loading overlay once we're sync'd
+  const loader = document.getElementById("loading-screen");
+  const status = document.getElementById("loading-status");
+  if (status) status.innerText = "ESTABLISHED_STABLE_LINK";
+  
+  setTimeout(() => {
+    if (loader) loader.classList.add("hidden");
+  }, 1000);
 });
 
 socket.on("roomJoined", (room) => {

@@ -16,6 +16,18 @@
   <body>
   <!-- dynamic 3d bg layer -->
   <div id="vanta-bg"></div>
+
+  <!-- cyber loading screen -->
+  <div id="loading-screen" class="loading-overlay">
+    <div class="loading-content">
+      <div class="loading-logo">⚡</div>
+      <h2 class="loading-text">WAKING_CORE...</h2>
+      <div class="loading-track">
+        <div id="loading-bar" class="loading-bar"></div>
+      </div>
+      <p id="loading-status" class="loading-status">INITIALIZING_SOCKET</p>
+    </div>
+  </div>
   
   <div class="bg-effects">
     <div class="victory-flash" id="victoryFlash"></div>
@@ -175,13 +187,14 @@
 
               <div class="game-main">
                 <div id="board" class="board"></div>
-                <div class="quick-reactions vertical">
-                  <button onclick="sendEmoji('🔥')" title="Fire">🔥</button>
-                  <button onclick="sendEmoji('😂')" title="Laugh">😂</button>
-                  <button onclick="sendEmoji('😮')" title="Wow">😮</button>
-                  <button onclick="sendEmoji('💀')" title="Dead">💀</button>
-                </div>
               </div>
+            </div>
+            <!-- moved outside the card as requested -->
+            <div class="quick-reactions vertical outside">
+              <button onclick="sendEmoji('🔥')" title="Fire">🔥</button>
+              <button onclick="sendEmoji('😂')" title="Laugh">😂</button>
+              <button onclick="sendEmoji('😮')" title="Wow">😮</button>
+              <button onclick="sendEmoji('💀')" title="Dead">💀</button>
             </div>
           </section>
 

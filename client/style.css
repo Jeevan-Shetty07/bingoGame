@@ -2096,7 +2096,80 @@ body {
   100% { transform: scale(1); }
 }
 
-/* Quick Reactions Styles - Vertical next to board */
+/* Loading Overlay */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.8s ease-out, visibility 0.8s;
+}
+
+.loading-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.loading-content {
+  text-align: center;
+  width: 300px;
+}
+
+.loading-logo {
+  font-size: 48px;
+  margin-bottom: 20px;
+  animation: pulse-logo 2s infinite ease-in-out;
+}
+
+.loading-text {
+  font-size: 14px;
+  letter-spacing: 4px;
+  color: var(--primary);
+  margin-bottom: 15px;
+  font-weight: 800;
+}
+
+.loading-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.loading-bar {
+  width: 30%;
+  height: 100%;
+  background: var(--cyber-gradient);
+  box-shadow: 0 0 15px var(--primary-glow);
+  animation: loading-progress 2s infinite linear;
+}
+
+.loading-status {
+  font-size: 10px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+@keyframes pulse-logo {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px var(--primary-glow)); }
+  50% { transform: scale(1.1); filter: drop-shadow(0 0 25px var(--primary-glow)); }
+}
+
+@keyframes loading-progress {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(333%); }
+}
+
+/* Quick Reactions Styles - Vertical next to board - OUTSIDE */
 .game-main {
   display: flex;
   align-items: center;
@@ -2105,17 +2178,38 @@ body {
   margin: 0 auto;
 }
 
-.quick-reactions.vertical {
+.quick-reactions.vertical.outside {
+  position: absolute;
+  right: -60px;
+  top: 50%;
+  transform: translateY(-50%);
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  background: rgba(0, 0, 0, 0.2);
-  padding: 10px;
-  border-radius: 20px;
+  gap: 12px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 12px 8px;
+  border-radius: 30px;
   border: 1px solid var(--border);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 30px rgba(0,0,0,0.5);
+  z-index: 5;
 }
 
-.quick-reactions.vertical button {
+@media (max-width: 900px) {
+  .game-main {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .quick-reactions.vertical.outside {
+    position: static;
+    transform: none;
+    flex-direction: row;
+    padding: 8px 15px;
+    margin-top: 20px;
+  }
+}
+
+.quick-reactions.outside button {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 50%;
@@ -2129,26 +2223,10 @@ body {
   justify-content: center;
 }
 
-.quick-reactions.vertical button:hover {
+.quick-reactions.outside button:hover {
   background: var(--primary);
   transform: scale(1.2);
   box-shadow: 0 0 15px var(--primary-glow);
-}
-
-@media (max-width: 900px) {
-  .game-main {
-    flex-direction: column;
-    gap: 10px;
-  }
-  .quick-reactions.vertical {
-    flex-direction: row;
-    padding: 8px 15px;
-  }
-  .quick-reactions.vertical button {
-    width: 38px;
-    height: 38px;
-    font-size: 18px;
-  }
 }
 
 /* Emoji Burst Animation */
