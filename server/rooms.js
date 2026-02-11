@@ -44,6 +44,7 @@ function createRoom(socketId, name, boardSize) {
     responded: {},
 
     winner: null,
+    turnExpiresAt: null,
   };
 
   return roomId;
@@ -129,10 +130,12 @@ function startGame(room) {
 
   room.winner = null;
   room.gameStarted = true;
+  room.turnExpiresAt = Date.now() + 10_000;
 }
 
 function nextTurn(room) {
   room.currentTurnIndex = (room.currentTurnIndex + 1) % room.players.length;
+  room.turnExpiresAt = Date.now() + 10_000;
 }
 
 function callNumber(room, number) {

@@ -346,6 +346,12 @@ socket.on(
     remainingPlayers = remaining ?? 0;
     pendingNames = pn ?? [];
 
+    // start the 10s timer for the current player's turn to call
+    if (!locked && turnExpiresAt) {
+      currentCall = { expiresAt: turnExpiresAt }; // temporary call obj for the timer
+      startTimer();
+    }
+
     setTurnUI();
     updateBoardUI();
   },

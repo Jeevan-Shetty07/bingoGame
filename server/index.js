@@ -50,6 +50,7 @@ function emitTurn(roomId) {
     turnLocked: room.turnLocked,
     remaining: remainingCount(room),
     pendingNames: getPendingNames(room),
+    turnExpiresAt: room.turnExpiresAt,
   });
 
   // clear then start a new skip timer for lazy players
@@ -59,7 +60,7 @@ function emitTurn(roomId) {
       console.log(`skipping lazy player in room ${roomId}`);
       nextTurn(room);
       emitTurn(roomId);
-    }, 15_000); 
+    }, 10_000); 
   }
 }
 
