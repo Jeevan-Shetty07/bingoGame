@@ -50,7 +50,6 @@ let doneSentForThisCall = false;
 let remainingPlayers = 0;
 let pendingNames = [];
 let lastCompletedLines = 0;
-let visionEnabled = false;
 
 // clock sync shift to keep evryone on the same page
 let serverTimeOffset = 0; 
@@ -373,12 +372,6 @@ function sendEmoji(emoji) {
   });
 }
 
-function toggleVision() {
-  visionEnabled = !visionEnabled;
-  const btn = document.getElementById("visionBtn");
-  if (btn) btn.classList.toggle("active", visionEnabled);
-  updateBoardUI();
-}
 
 socket.on(
   "calledNumbersUpdate",
@@ -633,9 +626,9 @@ function updateBoardUI() {
     const canCall = isMyTurn() && !turnLocked && !calledNumbers.includes(n);
     c.classList.toggle("callable", canCall);
     
-    // Vision Highlight: uncalled numbers on my board
+    // Vision Highlight: uncalled numbers on my board (ONLY when it's my turn)
     const isUncalled = !calledNumbers.includes(n) && !maskedNumbers.has(n);
-    c.classList.toggle("vision-highlight", visionEnabled && isUncalled);
+    c.classList.toggle("vision-highlight", isMyTurn() && !turnLocked && isUncalled);
   });
 }
 
