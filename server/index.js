@@ -58,9 +58,15 @@ function emitTurn(roomId) {
   if (!room.turnLocked && !room.winner && room.gameStarted) {
     turnTimeouts[roomId] = setTimeout(() => {
       console.log(`skipping lazy player in room ${roomId}`);
-      nextTurn(room);
-      emitTurn(roomId);
-    }, 10_000); 
+      // if locked, it means someone called but didn't mark (or markDone timed out)
+      // we need to unlock and next
+      if (room.turnLocked) {
+        unlockAndNext(roomId);
+      } else {
+        nextTurn(room);
+        emitTurn(roomId);
+      }
+    }, 11_000); // 11s to give client-side sync a chance
   }
 }
 
@@ -147,10 +153,10 @@ io.on("connection", (socket) => {
     emitCall(roomId);
     emitTurn(roomId);
 
-    // dont want the game stuck if some1 goes afk lol - unlock after 10s
+    // dont want the game stuck if some1 goes afk lol - unlock after 11s
     setTimeout(() => {
       if (room.turnLocked) unlockAndNext(roomId);
-    }, 10_000);
+    }, 11_000);
   });
 
   socket.on("kickPlayer", ({ roomId, targetId }) => {

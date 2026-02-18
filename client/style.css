@@ -131,42 +131,40 @@ body {
   flex: 1;
   width: 100%;
   max-width: 800px;
-  min-width: 320px;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 8px;
   transition: all 0.3s ease;
+  min-height: 0;
 }
 
 
 /* refined desktop chat layout */
 .side-view {
-  width: 380px;
+  flex: 0 0 380px;
+  max-width: 100%;
   display: flex !important;
   flex-direction: column;
-  height: 90%; /* Reverted to 90% */
-  flex-shrink: 0;
+  height: 90%;
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 12px;
   backdrop-filter: blur(20px);
   overflow: hidden;
   position: relative;
-  align-self: center; /* Center vertically » */
+  align-self: center;
 }
 
 /* Logic to hide chat on landing/create/join pages */
-#app:has(#home.active) .side-view,
-#app:has(#create.active) .side-view,
-#app:has(#join.active) .side-view {
-  display: none !important;
-}
-
-#app:has(#home.active) .chat-drawer-btn,
-#app:has(#create.active) .chat-drawer-btn,
-#app:has(#join.active) .chat-drawer-btn {
+#home.active ~ .side-view,
+#create.active ~ .side-view,
+#join.active ~ .side-view,
+#home.active ~ .chat-drawer-btn,
+#create.active ~ .chat-drawer-btn,
+#join.active ~ .chat-drawer-btn {
   display: none !important;
 }
 

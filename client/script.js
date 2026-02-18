@@ -354,7 +354,6 @@ socket.on(
     }
 
     setTurnUI();
-    renderPlayerIcons(); // Update icons on turn change
     updateBoardUI();
   },
 );
@@ -553,6 +552,8 @@ function setTurnUI() {
       }
     }
   });
+
+  renderPlayerIcons();
 }
 
 function renderPlayerIcons() {
@@ -681,6 +682,13 @@ function updateBoardUI() {
   });
 }
 
+function skipTurn() {
+  if (isMyTurn() && currentRoomId) {
+    socket.emit("markDone", { roomId: currentRoomId });
+    showToast("Skipping turn... ⏩");
+  }
+}
+
 /******** TIMER ********/
 const timerLabelEl = document.getElementById("timeLeft");
 
@@ -720,7 +728,14 @@ function startTimer() {
     if (t <= 0) {
       clearInterval(timerInt);
       maskIfMissed(currentCall.number);
-      sendDoneOnce();
+      
+      // If we haven't marked but we should have, mark it missed and send done
+      if (isMyTurn()) {
+         sendDoneOnce();
+      } else {
+         // for others, we just wait for server to sync us
+      }
+      
       updateBoardUI();
       updateBingoButton();
     }
