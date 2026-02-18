@@ -326,6 +326,7 @@ socket.on("gameStarted", ({ board, boardSize }) => {
   gameStartTime = Date.now();
   lastCompletedLines = 0;
   renderBoard(boardSize);
+  renderPlayerIcons(); // Initial render for icons
   updateBingoButton();
   show("game");
 });
@@ -353,6 +354,7 @@ socket.on(
     }
 
     setTurnUI();
+    renderPlayerIcons(); // Update icons on turn change
     updateBoardUI();
   },
 );
@@ -511,6 +513,7 @@ function updateLobby(room) {
   const nodeCountEl = document.getElementById("nodeCount");
   if (nodeCountEl) nodeCountEl.innerText = players.length.toString().padStart(2, "0");
 
+  renderPlayerIcons(); // Update icons when players list changes
   startBtn.style.display = room.hostId === socket.id ? "block" : "none";
 }
 
@@ -549,6 +552,32 @@ function setTurnUI() {
         gsap.to(li, { scale: 1, duration: 0.3 });
       }
     }
+  });
+}
+
+function renderPlayerIcons() {
+  const container = document.getElementById("playerIcons");
+  if (!container) return;
+
+  container.innerHTML = "";
+  players.forEach((p, i) => {
+    const isActive = i === currentTurnIndex;
+    const isMe = p.id === socket.id;
+    
+    const iconContainer = document.createElement("div");
+    iconContainer.className = `player-icon-container ${isActive ? "active" : ""}`;
+    
+    // determine icon (use first letter of name or a default)
+    const initial = (p.name && p.name.trim()) ? p.name.trim().charAt(0).toUpperCase() : "?";
+    
+    iconContainer.innerHTML = `
+      <div class="player-icon" title="${p.name}">
+        ${initial}
+      </div>
+      <div class="player-icon-name">${p.name} ${isMe ? "(You)" : ""}</div>
+    `;
+    
+    container.appendChild(iconContainer);
   });
 }
 
@@ -618,7 +647,7 @@ function cellClick(i, j, cell) {
   // MARKING
   if (!currentCall) return;
   if (currentCall.number !== num) return;
-  if (Date.now() > currentCall.expiresAt) return;
+  if (Date.now() + serverTimeOffset > currentCall.expiresAt) return;
 
   marked[i][j] = !marked[i][j];
   cell.classList.toggle("marked");
@@ -644,6 +673,11 @@ function updateBoardUI() {
     // Vision Highlight: uncalled numbers on my board (ONLY when it's my turn)
     const isUncalled = !calledNumbers.includes(n) && !maskedNumbers.has(n);
     c.classList.toggle("vision-highlight", isMyTurn() && !turnLocked && isUncalled);
+
+    // Target Highlight: the currently called number that needs to be marked
+    const isMarkingTime = currentCall && currentCall.expiresAt > (Date.now() + serverTimeOffset);
+    const isTargetOfCall = isMarkingTime && currentCall.number === n && !marked[i][j];
+    c.classList.toggle("target-highlight", isTargetOfCall);
   });
 }
 

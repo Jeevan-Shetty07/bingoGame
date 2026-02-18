@@ -95,6 +95,15 @@ function handleDisconnect(socketId) {
       if (room.responded) delete room.responded[socketId];
       affectedRoomId = roomId;
 
+      // adjust turn index if needed
+      if (index < room.currentTurnIndex) {
+        room.currentTurnIndex--;
+      } else if (index === room.currentTurnIndex && room.players.length > 0) {
+        // if it was their turn, the index now points to the next person automatically
+        // but we should ensure it stays within bounds if it was the last person
+        room.currentTurnIndex %= room.players.length;
+      }
+
       // assign a new host if the host left
       if (room.hostId === socketId && room.players.length > 0) {
         room.hostId = room.players[0].id;
