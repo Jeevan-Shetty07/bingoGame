@@ -89,7 +89,13 @@ function show(id) {
   }
 
   // hide/show the side bar depending on what screen we r on
-  const sidebarScreens = ["home", "create", "join"];
+  const sidebarScreens = ["home", "create", "join", "winner"];
+  if (sidebarScreens.includes(id)) {
+    document.body.classList.add("hide-chat");
+  } else {
+    document.body.classList.remove("hide-chat");
+  }
+
   if (sideView) {
     if (sidebarScreens.includes(id)) {
       sideView.style.display = "none";
@@ -304,7 +310,16 @@ socket.on("kicked", () => {
 
 socket.on("roomUpdated", (room) => {
   currentRoomId = room.id;
+  
+  // Robust state sync: if game is on, make sure we have the latest turn info
+  if (room.gameStarted) {
+    currentTurnIndex = room.currentTurnIndex;
+    turnLocked = room.turnLocked;
+    turnExpiresAt = room.turnExpiresAt;
+  }
+  
   updateLobby(room);
+  renderPlayerIcons();
 });
 
 socket.on("gameStarted", ({ board, boardSize }) => {
@@ -560,9 +575,12 @@ function renderPlayerIcons() {
   const container = document.getElementById("playerIcons");
   if (!container) return;
 
+  const activePlayer = players[currentTurnIndex];
+  const activePlayerId = activePlayer ? activePlayer.id : null;
+
   container.innerHTML = "";
-  players.forEach((p, i) => {
-    const isActive = i === currentTurnIndex;
+  players.forEach((p) => {
+    const isActive = p.id === activePlayerId;
     const isMe = p.id === socket.id;
     
     const iconContainer = document.createElement("div");
@@ -574,6 +592,7 @@ function renderPlayerIcons() {
     iconContainer.innerHTML = `
       <div class="player-icon" title="${p.name}">
         ${initial}
+        ${isActive ? '<div class="active-target">🎯</div>' : ''}
       </div>
       <div class="player-icon-name">${p.name} ${isMe ? "(You)" : ""}</div>
     `;

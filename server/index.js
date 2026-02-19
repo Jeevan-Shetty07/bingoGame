@@ -53,20 +53,24 @@ function emitTurn(roomId) {
     turnExpiresAt: room.turnExpiresAt,
   });
 
-  // clear then start a new skip timer for lazy players
-  clearTimeout(turnTimeouts[roomId]);
-  if (!room.turnLocked && !room.winner && room.gameStarted) {
+  // start a skip timer for lazy players IF not already running
+  if (!room.turnLocked && !room.winner && room.gameStarted && !turnTimeouts[roomId]) {
+    const timeToWait = (room.turnExpiresAt - Date.now()) + 1000; // 1s buffer
+    
     turnTimeouts[roomId] = setTimeout(() => {
+      delete turnTimeouts[roomId];
       console.log(`skipping lazy player in room ${roomId}`);
-      // if locked, it means someone called but didn't mark (or markDone timed out)
-      // we need to unlock and next
-      if (room.turnLocked) {
+      
+      const r = rooms[roomId];
+      if (!r) return;
+
+      if (r.turnLocked) {
         unlockAndNext(roomId);
       } else {
-        nextTurn(room);
+        nextTurn(r);
         emitTurn(roomId);
       }
-    }, 11_000); // 11s to give client-side sync a chance
+    }, Math.max(0, timeToWait));
   }
 }
 
@@ -111,7 +115,11 @@ io.on("connection", (socket) => {
 
     socket.join(roomId);
     socketRoomMap[socket.id] = roomId;
+    
+    // Send full room update + current turn state
     io.to(roomId).emit("roomUpdated", room);
+    emitTurn(roomId);
+    emitCall(roomId);
   });
 
   socket.on("startGame", (roomId) => {
@@ -261,22 +269,16 @@ io.on("connection", (socket) => {
       if (room) {
         handleDisconnect(socket.id);
         
-        // if the game is on, we might need to skip turn if it was their turn
         if (room.gameStarted && !room.winner) {
           if (room.players.length > 0) {
-             // currentTurnIndex might be out of bounds now or pointing to wrong person
-             room.currentTurnIndex %= room.players.length;
-             
-             // if room was locked on a call, check if every1 else is done
-             if (room.turnLocked && allDone(room)) {
-               unlockAndNext(roomId);
-             } else {
-               emitTurn(roomId);
-               emitCall(roomId);
-             }
+            room.currentTurnIndex %= room.players.length;
+            if (room.turnLocked && allDone(room)) {
+              unlockAndNext(roomId);
+            }
           }
+          io.to(roomId).emit("roomUpdated", room);
+          emitTurn(roomId);
         } else {
-          // just lobby update
           io.to(roomId).emit("roomUpdated", room);
         }
       }
